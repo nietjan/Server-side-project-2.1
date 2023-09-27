@@ -43,7 +43,8 @@ namespace Infrastructure {
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Bread,
                 price = 10,
-                eighteenUp = true
+                eighteenUp = true,
+                reservedBy = "test@test.com"
             },
         };
 

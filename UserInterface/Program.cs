@@ -19,8 +19,14 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+app.MapControllerRoute(name: "Packet",
+                pattern: "controller=Packet/{action=list}/{id?}");
+                
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();
