@@ -8,10 +8,8 @@ namespace DomainModel.enums
 {
     public enum City
     {
-        //meer toevoegen
-        Bread,
-        Diner,
-        Drink,
-        ENZ,
+        Breda,
+        DenBosch,
+        Tilburg
     }
 }

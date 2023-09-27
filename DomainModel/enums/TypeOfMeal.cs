@@ -8,8 +8,10 @@ namespace DomainModel.enums
 {
     public enum TypeOfMeal
     {
-        Breda,
-        DenBosch,
-        Tilburg
+        //meer toevoegen
+        Bread,
+        Diner,
+        Drink,
+        ENZ,
     }
 }
