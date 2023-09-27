@@ -33,7 +33,7 @@ namespace Infrastructure {
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 5,
-                eighteenUp = true
+                eighteenUp = true,
             },new Packet() {
                 id = 3,
                 name = "Packet3",
@@ -63,7 +63,11 @@ namespace Infrastructure {
         }
 
         public IEnumerable<Packet> GetPackets() {
-            return packets;
+            return packets.Where(i => i.reservedBy == null);
+        }
+
+        public IEnumerable<Packet> GetReservedPackets(string email) {
+            return packets.Where(i => i.reservedBy == email);
         }
 
         public IEnumerable<Packet> GetSinglePacket(int id) {

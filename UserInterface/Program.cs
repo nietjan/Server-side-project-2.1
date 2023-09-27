@@ -1,7 +1,12 @@
+using DomainServices;
+using Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSingleton<IRepository, InMemoryRepository>();
 
 var app = builder.Build();
 
@@ -19,14 +24,14 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-
-app.MapControllerRoute(name: "Packet",
-                pattern: "controller=Packet/{action=list}/{id?}");
-                
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "packet",
+    pattern: "{controller=Packet}/{action=List}/{id?}",
+    defaults: new { controller = "Packet", action = "List" });
 
 
 app.Run();
