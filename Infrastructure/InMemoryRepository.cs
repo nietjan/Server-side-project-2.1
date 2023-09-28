@@ -10,9 +10,9 @@ using DomainServices;
 namespace Infrastructure {
     public class InMemoryRepository : IRepository {
         //products for dummy packets list
-        private static readonly Cantine cantine = new Cantine() {id = 1, city = City.Breda, location = "Hogenschoollaan", servesHotMeals = true};
+        public static readonly Cantine cantine = new Cantine() {id = 1, city = City.Breda, location = "Hogenschoollaan", servesHotMeals = true};
 
-        private static List<Packet> packets = new List<Packet>() {
+        public List<Packet> packets { get; set; } = new List<Packet>() {
             new Packet() {
                 id = 1,
                 name = "Packet1",
@@ -53,13 +53,22 @@ namespace Infrastructure {
         }
 
         
-        public async Task<bool> addPacket(Packet packet) {
+        public async Task<bool> AddPacket(Packet packet) {
+            //add id
+            if (packet.id == 0) {
+                packet.id = packets.ElementAt(packets.Count() - 1).id+1;
+            }
+
             packets.Add(packet);
             return true;
         }
 
-        public IEnumerable<Product> GetAxampleProducts(int id) {
-            return packets.ElementAt(id).axampleProducts;
+        public IEnumerable<Product>? GetAxampleProducts(int id) {
+            if(id <= 0 || id > packets.Count()-1) {
+                return null;
+            }
+
+            return packets.Where(i => i.id == id).First().axampleProducts;
         }
 
         public IEnumerable<Packet> GetPackets() {
@@ -70,11 +79,23 @@ namespace Infrastructure {
             return packets.Where(i => i.reservedBy == email);
         }
 
-        public IEnumerable<Packet> GetSinglePacket(int id) {
-            return packets.Where(i => i.id == id);
+        public Packet? GetSinglePacket(int id) {
+            var list = packets.Where(i => i.id == id);
+
+            if(list.Count() > 0) {
+                return list.First();
+            } else {
+                return null;
+            }
         }
 
         public async Task<bool> reservePacket(int packetId, string personEmail) {
+            var list = packets.Where(i => i.id == packetId);
+
+            if (list.Count() == 0) {
+                return false;
+            }
+
             packets.ElementAt(packetId).reservedBy = personEmail;
             return true;
         }
