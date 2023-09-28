@@ -17,6 +17,20 @@ html {
   min-height: 100%;
 }
 
+
+
+navImg {
+    max-height: 5%;
+    max-width: 5%;
+}
+
 body {
   margin-bottom: 60px;
+}
+
+button {
+    background-color: #BF0436;
+    color: white;
+    border-radius: 10%;
+    border-color: #BF0436
 }

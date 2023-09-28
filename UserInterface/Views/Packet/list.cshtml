@@ -8,29 +8,32 @@
     <meta name="viewport" content="width=device-width" />
     <title>Packet list</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/lib/bootstrap/dist/js/bootstrap.js" />
+    <link rel="stylesheet" href="/css/site.css" />
 </head>
 <body>
-    <div class="text-center p-2">
-        <a asp-action="Reserved" asp-controller="Packet">Reserved Packets</a>
-        <a asp-action="List" asp-controller="Packet">All Packets</a>
-        <table class="table table-bordered table-striped table-sm">
-            <thead>
-                <tr><th>Name</th><th>id</th><th>ReservedBy</th></tr>
-            </thead>
-            <tbody>
-                @foreach (DomainModel.Packet r in Model!) {
-                    <tr>
-                        <td>@r.name</td>
-                        <td>@r.id</td>
-                        @if(r.reservedBy == null) {
-                            <td>Not reserved</td>
-                        } else {
-                            <td>@r.reservedBy</td>
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="p-2">
+        <button type="button" onclick="location.href='@Url.Action("Reserved", "Packet")'">Reserved</button>
+        <button type="button" onclick="location.href='@Url.Action("List", "Packet")'">Packets</button>
+        @foreach (DomainModel.Packet r in Model!) {
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-lg-2 col-sm-12">
+                        <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
+                    </div>
+                    <div class="col-lg-8 col-sm-12">
+                        <h5>@r.name</h5>
+                        <p>@string.Format("€ {0:N2} Euro", r.price)</p>
+                        <p>@r.startPickup.ToString("MMMM dd")</p>
+                        <p>@r.city - @r.cantine.location</p>
+
+                    </div>
+                    <div class="col-lg-2 col-sm-12 my-auto text-center">
+                        <button class="btn-default">buttons</button>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </body>
 </html>
