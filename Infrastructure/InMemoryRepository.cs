@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,7 +53,6 @@ namespace Infrastructure {
             cantine.packetList = packets;
         }
 
-        
         public async Task<bool> AddPacket(Packet packet) {
             //add id
             if (packet.id == 0) {
@@ -98,6 +98,19 @@ namespace Infrastructure {
 
             packets.ElementAt(packetId).reservedBy = personEmail;
             return true;
+        }
+
+        public IEnumerable<Packet>? GetPacketsOfCantine(int id) {
+            if(id != cantine.id) {
+                return null;
+            }
+
+            return packets.Where(i => i.cantine.id == id).OrderBy(i => i.startPickup);
+        }
+
+        public IEnumerable<Cantine> GetCantines(int userId) {
+            //In real Repo should return all cantines of table cantine and returns userId Canteen first
+            return new List<Cantine>() { cantine, cantine, cantine};
         }
     }
 }

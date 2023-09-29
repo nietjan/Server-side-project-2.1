@@ -19,5 +19,21 @@ namespace UserInterface.Controllers {
             var list = repository.GetReservedPackets(reservedEmail);
             return View("List", list);
         }
+
+        public IActionResult CanteenContents(int id) {
+            if (id == 0) {
+                //TODO: get Id from User;
+                id = 1;
+            }
+
+            var content = repository.GetPacketsOfCantine(id);
+
+            //check if there is content 
+            if (content == null) {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(content);
+        }
     }
 }

@@ -125,7 +125,7 @@ namespace Infrastructure.test {
             Assert.Null(products);
         }
 
-        //GetAxampleProducts
+        //GetPackets
         [Fact]
         public void Get_Only_Packets_Wich_Are_Not_Reserved() {
             //Arrange
@@ -136,6 +136,33 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.DoesNotContain(repository.packets.ElementAt(2) ,products);
+        }
+
+        //GetPacketsOfCanteen
+        [Fact]
+        public void Get_All_Packets_Of_Canteen_With_Valid_Id() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var packets = repository.GetPacketsOfCantine(1);
+
+            //Assert
+            Assert.NotNull(packets);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(2)]
+        public void Get_All_Packets_Of_Canteen_With_Invalid_Id_Returns_Null(int id) {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var packets = repository.GetPacketsOfCantine(id);
+
+            //Assert
+            Assert.Null(packets);
         }
 
         //GetReservedPackets
@@ -220,5 +247,17 @@ namespace Infrastructure.test {
             Assert.False(products);
         }
 
+        //GetCantines
+        [Fact]
+        public void Should_Return_All_Cantines() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var list = repository.GetCantines(1);
+
+            //Assert
+            Assert.NotNull(list);
+        }
     }
 }

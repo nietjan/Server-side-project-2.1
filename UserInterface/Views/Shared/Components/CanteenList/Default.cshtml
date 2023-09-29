@@ -1,0 +1,14 @@
+﻿@model IEnumerable<DomainModel.Cantine>
+
+<div class="btn-group">
+    <button type="button" class="dropdown-toggle button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select cantine
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" asp-route-id="@Model.First().id">@Model.First().location</a>
+        <div class="dropdown-divider"></div>
+        @foreach (DomainModel.Cantine item in Model) {
+            <a class="dropdown-item" asp-route-id="@item.id">@item.location</a>
+        }
+    </div>
+</div>
