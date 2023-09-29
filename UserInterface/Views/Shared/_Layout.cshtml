@@ -10,30 +10,30 @@
 </head>
 <body>
     <header>
-        <nav class="navbar .navbar-light navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-dark bg-success navbar-expand-sm navbar-toggleable-sm box-shadow m-0">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=" alt="website logo" height="36">
                 </a>
                 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Packet" asp-action="List">Packets</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Packet" asp-action="List">Packets</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
 
-                    
+                    @* account dropdown *@
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <button type="button" class="dropdown-toggle button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -53,12 +53,24 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
+    @* make image on home screen full screen, without padding or margin on the side *@
+    @if ((string?)ViewContext.RouteData.Values["action"] == "Index" && (string?)ViewContext.RouteData.Values["controller"] == "Home") {
+        @* home view *@
+        <div class="container-fluid p-0 m-0">
+            <main role="main" class="p-0 m-0">
+                @RenderBody()
+            </main>
+        </div>
+    } else {
+        @* normal views *@
+        <div class="container  mt-3">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
+   
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - UserInterface - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

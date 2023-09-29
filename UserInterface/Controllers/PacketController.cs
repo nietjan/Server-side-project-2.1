@@ -10,7 +10,12 @@ namespace UserInterface.Controllers {
             this.repository = repository;
         }
 
-        public IActionResult List() {
+        public IActionResult List(int id) {
+            //If user is cantine staff redidirect to CanteenContents
+            if (false) {
+                return RedirectToAction("CanteenContents");
+            }
+
             var list = repository.GetPackets();
             return View(list);
         }
