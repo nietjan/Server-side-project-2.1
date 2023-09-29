@@ -4,12 +4,19 @@
 }
 
 <div class="p-2">
-    <button type="button" onclick="location.href='@Url.Action("Reserved", "Packet")'">Reserved</button>
-    <button type="button" onclick="location.href='@Url.Action("List", "Packet")'">Packets</button>
+
+    @* check if page is for registerd packeges or non regsiterd packages *@
+    @if ((string?)ViewContext.RouteData.Values["action"] == "Reserved" && (string?)ViewContext.RouteData.Values["controller"] == "Packet") {
+        @* Reserved Action *@
+        <button type="button" onclick="location.href='@Url.Action("List", "Packet")'">Packets</button>
+    } else {
+        @* list Action*@
+        <button type="button" onclick="location.href='@Url.Action("Reserved", "Packet")'">Reserved</button>
+    }
     @foreach (DomainModel.Packet r in Model!) {
         <div class="container">
             <div class="row mt-4">
-                <div class="col-lg-2 col-sm-12">
+                <div class="col-lg-2 col-sm-12 p-0">
                     <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
                 </div>
                 <div class="col-lg-8 col-sm-120">
