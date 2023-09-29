@@ -2,6 +2,11 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center p-0 m-0">
+<div class="img-container text-center p-0 m-0">
     <img class="fullscreen" alt="home screen image" src="https://vmn-vmt.imgix.net/uploads/2023/02/boodschappen-prijsstijgingen-scaled.jpg?auto=compress%2Cformat&q=50">
+    <div class="text-block-over-image">
+        <h2>To Good To Go - Avans</h2>
+        <p>Togheter against food waste</p>
+        <button onclick="location.href='@Url.Action("List", "Packet")'">Check packets</button>
+    </div>
 </div>
