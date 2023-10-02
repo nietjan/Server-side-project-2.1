@@ -41,7 +41,7 @@ button {
 .fullscreen {
     display: block;
     width: 100%;
-    height: 87.1vh;
+    height: 100vh;
     object-fit: cover;
     object-position: top;
 }

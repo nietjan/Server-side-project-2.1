@@ -12,7 +12,7 @@ namespace UserInterface.Controllers {
 
         public IActionResult List(int id) {
             //If user is cantine staff redidirect to CanteenContents
-            if (false) {
+            if (true) {
                 return RedirectToAction("CanteenContents");
             }
 
@@ -39,6 +39,22 @@ namespace UserInterface.Controllers {
             }
 
             return View(content);
+        }
+
+        [HttpGet]
+        public IActionResult Register() {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(DomainModel.Packet packet) {
+            //if (ModelState.IsValid) {
+            //    await _repository.AddResponse(guestResponse);
+            //    return View("Thanks", guestResponse);
+            //} else {
+            //    return View();
+            //}
+            return View("List");
         }
     }
 }
