@@ -47,14 +47,24 @@ namespace UserInterface.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Register(DomainModel.Packet packet) {
-            //if (ModelState.IsValid) {
-            //    await _repository.AddResponse(guestResponse);
-            //    return View("Thanks", guestResponse);
-            //} else {
-            //    return View();
-            //}
-            return View("List");
+        public async Task<IActionResult> Register(DomainModel.Packet packet) {    
+            if(packet.startPickup >= packet.endPickup) {
+                ModelState.AddModelError("CustomError", "End date can't be before start date");
+            }
+
+            if (ModelState.IsValid) {
+                //set cantine connected to user
+                packet.cantine = Infrastructure.InMemoryRepository.cantine;
+
+                var completed = await repository.AddPacket(packet);
+                if (!completed) {
+                    ModelState.AddModelError("CustomError", "Something went wrong, please try again");
+                    return View();
+                }
+                return RedirectToAction("Index", "Home");
+            } else {
+                return View();
+            }
         }
     }
 }

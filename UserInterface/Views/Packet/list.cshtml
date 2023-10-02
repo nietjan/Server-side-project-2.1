@@ -22,7 +22,7 @@
                 <div class="col-lg-8 col-sm-120">
                     <h5>@r.name</h5>
                     <p>@string.Format("€ {0:N2} Euro", r.price)</p>
-                    <p>@r.startPickup.ToString("MMMM dd")</p>
+                    <p>@r.startPickup?.ToString("MMMM dd")</p>
                     <p>@r.city - @r.cantine.location</p>
                 </div>
                 <div class="col-lg-2 col-sm-12 my-auto text-center">

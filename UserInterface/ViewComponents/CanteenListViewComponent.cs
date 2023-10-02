@@ -10,9 +10,9 @@ namespace UserInterface.ViewComponents {
 
         public IViewComponentResult Invoke() {
             // logic for preparing data
-            var canteens = repository.GetCantines(1);
+            var cantines = repository.GetCantines(1);
 
-            return View(canteens);
+            return View(cantines);
         }
     }
 }
