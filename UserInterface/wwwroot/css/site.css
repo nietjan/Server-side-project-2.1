@@ -63,3 +63,15 @@ img-container {
         background-color: #14A44D;
     }
 }
+
+/*Select input*/
+select {
+    background-color: #BF0436;
+    color: white;
+    border-radius: 5px;
+    border-color: #BF0436
+}
+
+.block select{
+    display: block;
+}

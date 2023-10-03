@@ -12,7 +12,7 @@ namespace UserInterface.Controllers {
 
         public IActionResult List(int id) {
             //If user is cantine staff redidirect to CanteenContents
-            if (true) {
+            if (false) {
                 return RedirectToAction("CanteenContents");
             }
 
