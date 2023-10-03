@@ -87,16 +87,13 @@ namespace UserInterface.Controllers {
 
             //if packet == null, than packet does not exist
             if (packet == null) {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("List", new { id = 0 });
             }
             
             //if reserve packet is succes go back to detail page, otherwise go to list page 
             //TODO: change email to email of user
             var answer = await repository.reservePacket(id, "test@test.com");
-            if(answer == null) {
-                return RedirectToAction("Detail", new {id = id});
-            }
-            return RedirectToAction("List", new { id = 0 });
+            return RedirectToAction("Detail", new { id = id });
         }
     }
 }

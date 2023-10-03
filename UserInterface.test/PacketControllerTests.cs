@@ -199,5 +199,85 @@ namespace UserInterface.test {
             //Assert
             Assert.Null(result.ViewName);
         }
+
+        [Fact]
+        public void Detail_With_Not_Correct_Id_Should_Redirect() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = sut.Detail(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("Index", result?.ActionName);
+            Assert.Equal("Home", result?.ControllerName);
+        }
+
+        [Fact]
+        public void Detail_With_Id_Of_Zero_Should_Redirect() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(0).ReturnsNull();
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = sut.Detail(0) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("Index", result?.ActionName);
+            Assert.Equal("Home", result?.ControllerName);
+        }
+
+        [Fact]
+        public void Detail_With_Correct_Id_Should_Show_View() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = sut.Detail(1) as ViewResult;
+
+            //Assert
+            Assert.Null(result.ViewName);
+            Assert.NotNull(result.Model);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Wrong_Id_Should_Redirect_To_List() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(-1).ReturnsNull();
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = await sut.reservePacket(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("List", result?.ActionName);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Correct_Id_Should_Redirect_To_Detail() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
+            repoMock.reservePacket(1, Arg.Any<string>()).ReturnsNull();
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = await sut.reservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("Detail", result?.ActionName);
+            Assert.Null(result.ControllerName);
+        }
     }
 }

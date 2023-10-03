@@ -288,5 +288,43 @@ namespace Infrastructure.test {
             //Assert
             Assert.NotNull(list);
         }
+
+        //hasReservedForSpecificDay
+        [Fact]
+        public void Has_Reserved_For_Specific_Day_With_Date_Null_Should_Return_False() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var hasReserved = repository.hasReservedForSpecificDay(null);
+
+            //Assert
+            Assert.False(hasReserved);
+        }
+
+        [Fact]
+        public void Has_Reserved_For_Specific_Day_With_Date_Where_Is_Reserved_Should_Return_True() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now);
+
+            //Assert
+            Assert.True(hasReserved);
+        }
+
+        [Fact]
+        public void Has_Reserved_For_Specific_Day_With_Date_Where_Is_Not_Reserved_Should_Return_False() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now.AddDays(1));
+
+            //Assert
+            Assert.False(hasReserved);
+        }
+
     }
 }
