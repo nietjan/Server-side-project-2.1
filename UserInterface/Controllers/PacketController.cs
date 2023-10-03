@@ -66,5 +66,37 @@ namespace UserInterface.Controllers {
                 return View();
             }
         }
+
+        public IActionResult Detail(int id) {
+            //if id == 0, than redirect to home
+            if(id == 0) {
+                return RedirectToAction("Index", "Home");
+            }
+            var packet = repository.GetSinglePacket(id);
+
+            //if packet == null, than packet does not exist
+            if (packet == null) {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(packet);
+        }
+
+        public async Task<IActionResult> reservePacket(int id) {          
+            var packet = repository.GetSinglePacket(id);
+
+            //if packet == null, than packet does not exist
+            if (packet == null) {
+                return RedirectToAction("Index", "Home");
+            }
+            
+            //if reserve packet is succes go back to detail page, otherwise go to list page 
+            //TODO: change email to email of user
+            var answer = await repository.reservePacket(id, "test@test.com");
+            if(answer == null) {
+                return RedirectToAction("Detail", new {id = id});
+            }
+            return RedirectToAction("List", new { id = 0 });
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace DomainServices {
         public Packet? GetSinglePacket(int id);
         public Task<bool> AddPacket(Packet packet);
         public IEnumerable<Product>? GetAxampleProducts(int id);
-        public Task<bool> reservePacket(int packetId, string personEmail);
+        public Task<string>? reservePacket(int packetId, string personEmail);
+        public bool hasReservedForSpecificDay(DateTime? date);
     }
 }

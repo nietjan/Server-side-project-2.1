@@ -37,6 +37,13 @@ button {
     border-color: #BF0436
 }
 
+    button:disabled,
+    button[disabled] {
+        border: 1px solid #999999;
+        background-color: #cccccc;
+        color: #666666;
+    }
+
 /*home screen*/
 .fullscreen {
     display: block;
@@ -46,7 +53,7 @@ button {
     object-position: top;
 }
 
-img-container {
+.img-container {
     position: relative;
 }
 
@@ -75,3 +82,28 @@ select {
 .block select{
     display: block;
 }
+
+/*home screen*/
+.product-img-holder {
+    position: relative;
+}
+
+/* Bottom right text */
+.img-over-product-img {
+    position: absolute;
+    right: 5%;
+    top: 5%;
+    width: 15%;
+}
+
+@media (max-width: 767px) {
+    .button-middle-small-screen {
+        text-align: center;
+    }
+}
+
+.red-bold-Text {
+    color: #BF0436;
+    font-weight: bold;
+}
+

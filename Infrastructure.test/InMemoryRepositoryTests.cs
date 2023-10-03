@@ -221,30 +221,59 @@ namespace Infrastructure.test {
         }
 
         //Reserve packet
-        [Fact]
-        public async void Reserve_Packets_With_Correct_Info_Returns_True() {
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void Reserve_Packet_With_Correct_Info_Should_Return_Null(int id) {
             //Arrange
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var products = await repository.reservePacket(1,"test@test.nl");
+            var result = await repository.reservePacket(id,"test@test.nl");
 
             //Assert
-            Assert.True(products);
+            Assert.Null(result);
         }
 
         [Theory]
+        [InlineData(0)]
         [InlineData(-1)]
-        [InlineData(4)]
-        public async void Reserve_Packets_With_Incorrect_Info_Returns_False(int id) {
+        [InlineData(-10)]
+        public async void Reserve_Packet_With_Id_Lower_Or_Equal_To_0_Should_Return_Package_Not_Found(int id) {
             //Arrange
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var products = await repository.reservePacket(id, "test@test.nl");
+            var result = await repository.reservePacket(id, "test@test.nl");
 
             //Assert
-            Assert.False(products);
+            Assert.Equal("Packet not found", result);
+        }
+
+        [Theory]
+        [InlineData(4)]
+        [InlineData(10)]
+        public async void Reserve_Packet_With_Not_Existing_Id_Should_Return_Package_Not_Found(int id) {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.reservePacket(id, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Packet not found", result);
+        }
+
+        [Fact]
+        public async void Reserve_Packet_With_Id_Of_Already_Reserved_Package_Should_Return_Package_Already_Reserved() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.reservePacket(3, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Packet already reserved", result);
         }
 
         //GetCantines

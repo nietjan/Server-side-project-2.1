@@ -1,5 +1,42 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model DomainModel.Packet
+@inject DomainServices.IRepository repository
 @{
+
 }
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-lg-4 col-sm-12">
+            <div class="product-img-holder">
+                <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
+                @if (Model.eighteenUp)
+                {
+                    <img class="img-fluid img-over-product-img" alt="packet image" src="https://cdn-icons-png.flaticon.com/512/3570/3570248.png">
+                }
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-8 col-sm-12">
+            <p>@Model.name</p>
+            <p>@string.Format("€ {0:N2} Euro", Model.price)</p>
+            <p>@Model.typeOfMeal</p>
+            <p>@Model.city - @Model?.cantine?.location<p>
+            <p>Pickup starts at @Model?.startPickup?.ToString("d MMMM hh:mm")<p>
+            <p>Pickup ends at @Model?.endPickup?.ToString("d MMMM hh:mm")</</p>
+
+            @if (Model.reservedBy != null) {
+                <p class="red-bold-Text">Reserved</p>
+            }
+            
+            @if (repository.hasReservedForSpecificDay(Model?.startPickup) || Model.reservedBy != null) {
+                <div class="button-middle-small-screen">
+                    <button disabled onclick="location.href='@Url.Action("reservePacket", "Packet", new {id = Model?.id})'">Reserve</button>
+                </div>
+            } else{
+                <div class="button-middle-small-screen">
+                    <button onclick="location.href='@Url.Action("reservePacket", "Packet", new {id = Model?.id})'">Reserve</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

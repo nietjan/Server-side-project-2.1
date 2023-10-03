@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainModel", "DomainModel\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainServices", "DomainServices\DomainServices.csproj", "{B33C9893-F1A5-48EA-A830-73321A79E6B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.test", "Infrastructure.test\Infrastructure.test.csproj", "{D7C23E4A-041C-48E7-A67C-4B7009E755AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.test", "Infrastructure.test\Infrastructure.test.csproj", "{D7C23E4A-041C-48E7-A67C-4B7009E755AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface.test", "UserInterface.test\UserInterface.test.csproj", "{0E3F29E6-CBDB-402C-A420-D95522BA30A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserInterface.test", "UserInterface.test\UserInterface.test.csproj", "{0E3F29E6-CBDB-402C-A420-D95522BA30A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{FAA9D00B-75C1-4801-87F6-6C1A2E5C77F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{0E3F29E6-CBDB-402C-A420-D95522BA30A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E3F29E6-CBDB-402C-A420-D95522BA30A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E3F29E6-CBDB-402C-A420-D95522BA30A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAA9D00B-75C1-4801-87F6-6C1A2E5C77F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAA9D00B-75C1-4801-87F6-6C1A2E5C77F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAA9D00B-75C1-4801-87F6-6C1A2E5C77F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAA9D00B-75C1-4801-87F6-6C1A2E5C77F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
