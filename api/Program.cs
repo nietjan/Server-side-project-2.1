@@ -1,5 +1,6 @@
 using DomainServices;
 using Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IRepository, InMemoryRepository>();
+
+//db context
+builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("Default")
+));
 
 var app = builder.Build();
 
