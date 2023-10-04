@@ -42,10 +42,8 @@ namespace DomainModel
 
         public Cantine? cantine { get; set; }
 
-        //axemple products based on old products
-        public ICollection<Product> axampleProducts { get; set; } = new List<Product>();
+        //exemple products based on old products
+        public ExampleProductList? exampleProductList { get; set; }
 
-        //Actual products
-        public ICollection<Product> products { get; set; } = new List<Product>();
     }
 }

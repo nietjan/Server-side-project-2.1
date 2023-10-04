@@ -11,7 +11,7 @@
                 <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
                 @if (Model.eighteenUp)
                 {
-                    <img class="img-fluid img-over-product-img" alt="packet image" src="https://cdn-icons-png.flaticon.com/512/3570/3570248.png">
+                    <img class="img-fluid img-over-product-img" alt="18+ icon" src="https://cdn-icons-png.flaticon.com/512/3570/3570248.png">
                 }
             </div>
         </div>
@@ -38,5 +38,32 @@
             }
         </div>
     </div>
+    <div class="row mt-4 mb-2">
+        <div class="col-12 mx-0 px-0">
+            <h5>Example products based on previous comparable packets</h5>
+        </div>
+    </div>
+        @if (Model?.exampleProductList?.list == null) {
+            <p>No comparable packet found</p>
+        } else{
+        <div class="row">
+            @foreach (DomainModel.Product product in Model.exampleProductList.list) {
+                <div class="col-lg-2 col-sm-4 col-5 mb-2 px-0 mr-0">
+                    <div class="product-img-holder">
+                        <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
+                        @if(product.alcoholic){
+                            <img class="img-fluid img-over-product-img" alt="18+ icon" src="https://cdn-icons-png.flaticon.com/512/3570/3570248.png">
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-10 col-sm-8 col-7 my-auto ">
+                    <p>@product.name</p>
+                    @if (product.alcoholic) {
+                        <p>Contains alcohol</p>
+                    }
+                </div>
+            }
+        </div>
+        }
 </div>
 

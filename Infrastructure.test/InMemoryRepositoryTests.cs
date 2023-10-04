@@ -98,33 +98,6 @@ namespace Infrastructure.test {
             Assert.NotEqual(0, repository.packets.Last().id);
         }
 
-        //GetAxampleProducts
-        [Fact]
-        public void Axample_Product_Should_Be_Returned_When_Given_Valid_Id() {
-            //Arrange
-            InMemoryRepository repository = new InMemoryRepository();
-
-            //Act
-            var products = repository.GetAxampleProducts(1);
-
-            //Assert
-            Assert.NotNull(products);
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(4)]
-        public void Axample_Product_Should_Return_0_When_Given_InValid_Id(int id) {
-            //Arrange
-            InMemoryRepository repository = new InMemoryRepository();
-
-            //Act
-            var products = repository.GetAxampleProducts(id);
-
-            //Assert
-            Assert.Null(products);
-        }
-
         //GetPackets
         [Fact]
         public void Get_Only_Packets_Wich_Are_Not_Reserved() {
@@ -326,5 +299,29 @@ namespace Infrastructure.test {
             Assert.False(hasReserved);
         }
 
+        //GetExampleProducts
+        [Fact]
+        public void Get_Example_Products_With_Type_Of_Meal_Is_Null_Returns_Null() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = repository.GetExampleProducts(null);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Get_Example_Products_With_Type_Of_Meal_Is_Returns_Products() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = repository.GetExampleProducts(TypeOfMeal.Bread);
+
+            //Assert
+            Assert.Equal(InMemoryRepository.productsExampleList.First(), result);
+        }
     }
 }

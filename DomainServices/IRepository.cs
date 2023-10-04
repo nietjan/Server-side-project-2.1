@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DomainModel;
+using DomainModel.enums;
 
 namespace DomainServices {
     public interface IRepository {
@@ -18,7 +19,7 @@ namespace DomainServices {
 
         public Packet? GetSinglePacket(int id);
         public Task<bool> AddPacket(Packet packet);
-        public IEnumerable<Product>? GetAxampleProducts(int id);
+        public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal);
         public Task<string>? reservePacket(int packetId, string personEmail);
         public bool hasReservedForSpecificDay(DateTime? date);
     }

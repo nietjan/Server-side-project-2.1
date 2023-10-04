@@ -14,6 +14,66 @@ namespace Infrastructure {
         //products for dummy packets list
         public static readonly Cantine cantine = new Cantine() {id = 1, city = City.Breda, location = "Hogenschoollaan", servesHotMeals = true};
 
+        public static List<ExampleProductList> productsExampleList = new List<ExampleProductList>() {
+            new ExampleProductList() {
+                id = 1,
+                list = new List<Product>() {
+                    new Product() {
+                        id = 1,
+                        name = "Bread1",
+                        alcoholic = true,
+                    }, new Product() {
+                        id = 2,
+                        name = "Bread2",
+                        alcoholic = true,
+                    }, new Product() {
+                        id = 3,
+                        name = "Bread3",
+                        alcoholic = false,
+                    }
+                },
+                type = TypeOfMeal.Bread
+            },
+            new ExampleProductList() {
+                id = 2,
+                list = new List<Product>() {
+                    new Product() {
+                        id = 4,
+                        name = "Diner1",
+                        alcoholic = true,
+                    }, new Product() {
+                        id = 5,
+                        name = "Diner2",
+                        alcoholic = false,
+                    }, new Product() {
+                        id = 6,
+                        name = "Diner3",
+                        alcoholic = true,
+                    }
+                },
+                type = TypeOfMeal.Diner
+            },
+            new ExampleProductList() {
+                id = 3,
+                list = new List<Product>() {
+                    new Product() {
+                        id = 7,
+                        name = "Drink1",
+                        alcoholic = false,
+                    }, new Product() {
+                        id = 8,
+                        name = "Drink2",
+                        alcoholic = true,
+                    }, new Product() {
+                        id = 9,
+                        name = "Drink3",
+                        alcoholic = true,
+                    }
+                },
+                type = TypeOfMeal.Drink
+            },
+        };
+
         public List<Packet> packets { get; set; } = new List<Packet>() {
             new Packet() {
                 id = 1,
@@ -25,6 +85,7 @@ namespace Infrastructure {
                 typeOfMeal = TypeOfMeal.Diner,
                 price = 8,
                 eighteenUp = true,
+                exampleProductList = productsExampleList.ElementAt(1)
             },
             new Packet() {
                 id = 2,
@@ -36,6 +97,7 @@ namespace Infrastructure {
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 5,
                 eighteenUp = true,
+                exampleProductList = productsExampleList.ElementAt(2)
             },new Packet() {
                 id = 3,
                 name = "Packet3",
@@ -46,7 +108,8 @@ namespace Infrastructure {
                 typeOfMeal = TypeOfMeal.Bread,
                 price = 10,
                 eighteenUp = false,
-                reservedBy = "test@test.com"
+                reservedBy = "test@test.com",
+                exampleProductList = productsExampleList.ElementAt(0)
             },
         };
 
@@ -62,14 +125,6 @@ namespace Infrastructure {
 
             packets.Add(packet);
             return true;
-        }
-
-        public IEnumerable<Product>? GetAxampleProducts(int id) {
-            if(id <= 0 || id > packets.Count()-1) {
-                return null;
-            }
-
-            return packets.Where(i => i.id == id).First().axampleProducts;
         }
 
         public IEnumerable<Packet> GetPackets() {
@@ -143,6 +198,17 @@ namespace Infrastructure {
                 return true;
             }
             return false;
+        }
+
+        public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal) {
+            if (typeOfMeal == null) return null;
+
+            //get products based of type of meal
+            var list = productsExampleList.Where(i => i.type == typeOfMeal);
+
+            if(list.Count() == 0) return null;
+            
+            return list.First();
         }
     }
 }

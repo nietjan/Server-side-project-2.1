@@ -56,6 +56,9 @@ namespace UserInterface.Controllers {
                 //set cantine connected to user
                 packet.cantine = Infrastructure.InMemoryRepository.cantine;
 
+                //add example products
+                packet.exampleProductList = repository.GetExampleProducts(packet.typeOfMeal);
+
                 var completed = await repository.AddPacket(packet);
                 if (!completed) {
                     ModelState.AddModelError("CustomError", "Something went wrong, please try again");
