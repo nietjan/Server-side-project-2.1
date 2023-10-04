@@ -184,12 +184,11 @@ namespace Infrastructure {
             return new List<Cantine>() { cantine, cantine, cantine};
         }
 
-        public bool hasReservedForSpecificDay(DateTime? packetDate) {
+        public bool hasReservedForSpecificDay(DateTime? packetDate,  string personEmail) {
             if(packetDate == null) {
                 return false;
             }
 
-            string personEmail = "test@test.com";
             if (packets.Where(i => i.reservedBy == personEmail
             && i.startPickup.Value.Day == packetDate.Value.Day
             && i.startPickup.Value.Month == packetDate.Value.Month

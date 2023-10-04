@@ -2,6 +2,7 @@ using DomainModel.enums;
 using DomainModel;
 using Infrastructure;
 using System.ComponentModel;
+using Xunit;
 
 namespace Infrastructure.test {
     public class InMemoryRepositoryTests {
@@ -168,7 +169,7 @@ namespace Infrastructure.test {
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public void Get_Single_Product_With_Correct_Id(int id) {
+        public void Get_Single_Packet_With_Correct_Id(int id) {
             //Arrange
             InMemoryRepository repository = new InMemoryRepository();
 
@@ -182,7 +183,7 @@ namespace Infrastructure.test {
         [Theory]
         [InlineData(-1)]
         [InlineData(4)]
-        public void Get_Single_Product_With_Incorrect_Id_That_Is_Null(int id) {
+        public void Get_Single_Packet_With_Incorrect_Id_That_Is_Null(int id) {
             //Arrange
             InMemoryRepository repository = new InMemoryRepository();
 
@@ -269,7 +270,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(null);
+            var hasReserved = repository.hasReservedForSpecificDay(null, "test@test.com");
 
             //Assert
             Assert.False(hasReserved);
@@ -281,7 +282,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now);
+            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now, "test@test.com");
 
             //Assert
             Assert.True(hasReserved);
@@ -293,7 +294,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now.AddDays(1));
+            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now.AddDays(1), "test@test.com");
 
             //Assert
             Assert.False(hasReserved);

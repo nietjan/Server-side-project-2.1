@@ -84,14 +84,11 @@ namespace Infrastructure {
             }
         }
 
-        public bool hasReservedForSpecificDay(DateTime? packetDate) {
+        public bool hasReservedForSpecificDay(DateTime? packetDate, string personEmail) {
             if (packetDate == null) {
                 return false;
             }
 
-            //return true, if pickupdate has equal day, month and year to packetdate 
-            // and the packet is reserved by the user
-            string personEmail = "test@test.com";
             if (context.packets.Where(i => i.reservedBy == personEmail
             && i.startPickup.Value.Day == packetDate.Value.Day
             && i.startPickup.Value.Month == packetDate.Value.Month
