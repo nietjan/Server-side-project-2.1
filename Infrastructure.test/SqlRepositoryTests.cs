@@ -400,5 +400,35 @@ namespace Infrastructure.test {
             //Assert
             Assert.Equal(list, result);
         }
+
+        //Update packet
+        [Fact]
+        public async void Update_Packet_With_Not_In_Db_Packet_Returns_False() {
+            //Arrange
+            _context.Add(new Packet() { name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.UpdatePacket(new Packet() { name = "", id = 2, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
+
+            //Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async void Update_Packet_With_Packet_In_Db_Packet_Returns_True() {
+            //Arrange
+            Packet packet = new Packet() { name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+            await _context.SaveChangesAsync();
+            packet.name = "sss";
+
+            //Act
+            var result = await repository.UpdatePacket(packet);
+
+            //Assert
+            Assert.True(result);
+            Assert.Equal(packet.name, _context.packets.First().name);
+        }
     }
 }

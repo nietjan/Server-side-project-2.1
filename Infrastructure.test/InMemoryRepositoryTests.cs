@@ -324,5 +324,35 @@ namespace Infrastructure.test {
             //Assert
             Assert.Equal(InMemoryRepository.productsExampleList.First(), result);
         }
+
+        //Update packet
+        [Fact]
+        public async void Update_Packet_With_Not_In_Db_Packet_Returns_False() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.UpdatePacket(new Packet(){
+                name = " ",
+                id = 0,
+            });
+
+            //Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async void Update_Packet_With_Packet_In_Db_Packet_Returns_True() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+            var packet = repository.packets.First();
+            packet.price = 1;
+
+            //Act
+            var result = await repository.UpdatePacket(packet);
+
+            //Assert
+            Assert.True(result);
+        }
     }
 }

@@ -125,5 +125,15 @@ namespace Infrastructure {
             await context.SaveChangesAsync();
             return null;
         }
+
+        public async Task<bool> UpdatePacket(Packet packet) {
+            if(context.packets.Where(i => i.id == packet.id).Count() != 1) {
+                return false;
+            }
+
+            context.Update(packet);
+            await context.SaveChangesAsync();
+            return true;
+        }
     }
 }

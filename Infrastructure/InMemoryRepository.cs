@@ -209,5 +209,16 @@ namespace Infrastructure {
             
             return list.First();
         }
+
+        public async Task<bool> UpdatePacket(Packet packet) {
+            var list = packets.Where(i => i.id == packet.id);
+            if(list.Count() != 1) {
+                return false;
+            }
+
+            packets.Remove(list.First());
+            packets.Add(packet);
+            return true;
+        }
     }
 }

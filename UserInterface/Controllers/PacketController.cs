@@ -70,6 +70,44 @@ namespace UserInterface.Controllers {
             }
         }
 
+        [HttpGet]
+        public IActionResult Update(int id) {
+            var packet = repository.GetSinglePacket(id);
+            
+            //if packet does not exist or is reserved it can not be updated
+            if(packet == null) {
+                return RedirectToAction("List", new { id = 0 });
+            } else if(packet.reservedBy != null) {
+                return RedirectToAction("List", new { id = 0 });
+            }
+
+            return View(packet);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(DomainModel.Packet packet) {
+            if (packet.startPickup >= packet.endPickup) {
+                ModelState.AddModelError("CustomError", "End date can't be before start date");
+            }
+
+            if (ModelState.IsValid) {
+                //set cantine connected to user
+                packet.cantine = Infrastructure.InMemoryRepository.cantine;
+
+                //add example products
+                packet.exampleProductList = repository.GetExampleProducts(packet.typeOfMeal);
+
+                var completed = await repository.UpdatePacket(packet);
+                if (!completed) {
+                    ModelState.AddModelError("CustomError", "Something went wrong, please try again");
+                    return View();
+                }
+                return RedirectToAction("Detail", new { id = packet.id });
+            } else {
+                return View();
+            }
+        }
+
         public IActionResult Detail(int id) {
             //if id == 0, than redirect to home
             if(id == 0) {

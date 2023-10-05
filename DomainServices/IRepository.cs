@@ -19,6 +19,7 @@ namespace DomainServices {
 
         public Packet? GetSinglePacket(int id);
         public Task<bool> AddPacket(Packet packet);
+        public Task<bool> UpdatePacket(Packet packet);
         public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal);
         public Task<string>? reservePacket(int packetId, string personEmail);
         public bool hasReservedForSpecificDay(DateTime? date, string personEmail);

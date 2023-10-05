@@ -3,41 +3,41 @@
 
 }
 <div class="p-2">
-    <h5 class="bg-success text-light text-center m-2 p-2">Register packet</h5>
-    <form asp-action="Register" method="post" class="m-2">
+    <h5 class="bg-success text-light text-center m-2 p-2">Update packet</h5>
+    <form asp-action="Update" method="post" class="m-2">
         <div asp-validation-summary="All"></div>
         <div class="form-group mb-2">
             <label asp-for="name" class="form-label">Name:</label>
-            <input asp-for="name" class="form-control" />
+            <input asp-for="name" value="@Model.name" class="form-control" />
         </div>
         <div class="form-group mb-2">
             <label asp-for="city" class="form-label">City:</label>
             <div class="block">
                 <select class="block" asp-for="city" asp-items="Html.GetEnumSelectList<DomainModel.enums.City>()">
-                    <option selected="selected" value="">Please select</option>
+                    <option selected="selected" value=@Model.city>Please select</option>
                 </select>
             </div>
         </div>
         <div class="form-group mb-2">
             <label asp-for="startPickup" class="form-label">Start pickup:</label>
-            <input asp-for="startPickup" class="form-control" />
+            <input asp-for="startPickup" value="@Model.startPickup.Value.ToString("yyyy-MM-dd hh:mm")" class="form-control" />
         </div>
         <div class="form-group mb-2">
             <label asp-for="endPickup" class="form-label">End pickup:</label>
-            <input asp-for="endPickup" class="form-control" />
-        </div> 
+            <input asp-for="endPickup" value="@Model.endPickup.Value.ToString("yyyy-MM-dd hh:mm")" class="form-control" />
+        </div>
         <div class="form-group mb-2">
             <label asp-for="typeOfMeal" class="form-label">Type of meal:</label>
             <div class="block">
-            <select class="block" asp-for="typeOfMeal" asp-items="Html.GetEnumSelectList<DomainModel.enums.TypeOfMeal>()">
-                <option selected="selected" value="">Please select</option>
-            </select>
+                <select class="block" asp-for="typeOfMeal" asp-items="Html.GetEnumSelectList<DomainModel.enums.TypeOfMeal>()">
+                    <option selected="selected" value="@Model.typeOfMeal">Please select</option>
+                </select>
             </div>
         </div>
         <div class="form-group mb-2">
             <label asp-for="price" class="form-label">price:</label>
-            <input asp-for="price" class="form-control" />
+            <input asp-for="price" value="@Model.price" class="form-control" />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit">Update</button>
     </form>
 </div>

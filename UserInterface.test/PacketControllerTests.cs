@@ -201,6 +201,103 @@ namespace UserInterface.test {
         }
 
         [Fact]
+        public void Update_Get_Should_Return_View() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(1).Returns(new Packet(){ name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = sut.Update(1) as ViewResult;
+
+            //Assert
+            Assert.Null(result.ViewName);
+        }
+
+        [Fact]
+        public void Update_Get_Should_Redirect_When_Packet_Does_Not_Exist() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(1).ReturnsNull();
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = sut.Update(1) as RedirectToActionResult; ;
+
+            //Assert
+            Assert.Equal("List", result?.ActionName);
+        }
+
+        [Fact]
+        public void Update_Get_Should_Redirect_When_Packet_Is_Reserved() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "", reservedBy="", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
+
+            var sut = new PacketController(repoMock);
+
+            //Act
+            var result = sut.Update(1) as RedirectToActionResult; ;
+
+            //Assert
+            Assert.Equal("List", result?.ActionName);
+        }
+
+        [Fact]
+        public async void Update_Post_With_Valid_ModelState_Should_Return_Home() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+
+            var sut = new PacketController(repoMock);
+            var packet = new DomainModel.Packet() {
+                name = "test",
+                city = City.Breda,
+                startPickup = DateTime.Now,
+                endPickup = DateTime.Now.AddDays(1),
+                typeOfMeal = TypeOfMeal.Drink,
+                price = 1,
+                eighteenUp = true,
+                cantine = Infrastructure.InMemoryRepository.cantine,
+            };
+            repoMock.UpdatePacket(packet).Returns(true);
+
+            //Act
+            var result = await sut.Update(packet) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("Detail", result?.ActionName);
+        }
+
+        [Fact]
+        public async void Update_With_InValid_ModelState_Should_Return_View() {
+            //Arrange
+            var repoMock = Substitute.For<IRepository>();
+
+            var sut = new PacketController(repoMock);
+            var packet = new DomainModel.Packet() {
+                name = "test",
+                city = City.Breda,
+                startPickup = DateTime.Now,
+                price = 1,
+                endPickup = DateTime.Now.AddDays(1),
+                typeOfMeal = TypeOfMeal.Drink,
+                eighteenUp = true,
+                cantine = Infrastructure.InMemoryRepository.cantine,
+            };
+            repoMock.UpdatePacket(packet).Returns(false);
+            sut.ModelState.AddModelError("key", "error message");
+
+            //Act
+            var result = await sut.Update(packet) as ViewResult;
+
+            //Assert
+            Assert.Null(result.ViewName);
+        }
+
+
+        [Fact]
         public void Detail_With_Not_Correct_Id_Should_Redirect() {
             //Arrange
             var repoMock = Substitute.For<IRepository>();
