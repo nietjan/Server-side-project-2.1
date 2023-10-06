@@ -57,14 +57,16 @@
     </header>
 
     @* make image on home screen full screen, without padding or margin on the side *@
-    @if ((string?)ViewContext.RouteData.Values["action"] == "Index" && (string?)ViewContext.RouteData.Values["controller"] == "Home") {
+    @if ((string?)ViewContext.RouteData.Values["action"] == "Index" && (string?)ViewContext.RouteData.Values["controller"] == "Home")
+    {
         @* home view *@
         <div class="container-fluid p-0 m-0">
             <main role="main" class="p-0 m-0">
                 @RenderBody()
             </main>
         </div>
-    } else {
+    } else
+    {
         @* normal views *@
         <div class="container  mt-3">
             <main role="main" class="pb-3">

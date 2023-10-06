@@ -1,7 +1,9 @@
 ﻿using DomainServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UserInterface.Controllers {
+    [Authorize]
     public class PacketController : Controller {
         private IRepository repository;
         private static readonly string reservedid = "test@test.com";
@@ -25,6 +27,7 @@ namespace UserInterface.Controllers {
             return View("List", list);
         }
 
+        [Authorize(Policy = "Claim.test")]
         public IActionResult CanteenContents(int id) {
             if (id == 0) {
                 //TODO: get Id from User;
@@ -41,11 +44,13 @@ namespace UserInterface.Controllers {
             return View(content);
         }
 
+        [Authorize(Policy = "canteenStaff")]
         [HttpGet]
         public IActionResult Register() {
             return View();
         }
 
+        [Authorize(Policy = "canteenStaff")]
         [HttpPost]
         public async Task<IActionResult> Register(DomainModel.Packet packet) {    
             if(packet.startPickup >= packet.endPickup) {
@@ -70,6 +75,7 @@ namespace UserInterface.Controllers {
             }
         }
 
+        [Authorize(Policy = "canteenStaff")]
         [HttpGet]
         public IActionResult Update(int id) {
             var packet = repository.GetSinglePacket(id);
@@ -84,6 +90,7 @@ namespace UserInterface.Controllers {
             return View(packet);
         }
 
+        [Authorize(Policy = "canteenStaff")]
         [HttpPost]
         public async Task<IActionResult> Update(DomainModel.Packet packet) {
             if (packet.startPickup >= packet.endPickup) {

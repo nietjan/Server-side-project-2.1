@@ -79,7 +79,7 @@ select {
     border-color: #BF0436
 }
 
-.block select{
+.block {
     display: block;
 }
 
@@ -100,10 +100,19 @@ select {
     .button-middle-small-screen {
         text-align: center;
     }
+
+    .only-big-screen{
+        visibility: hidden;
+    }
 }
 
 .red-bold-Text {
     color: #BF0436;
     font-weight: bold;
+}
+
+.div-center-vertical {
+    margin-top: auto;
+    margin-bottom: auto;
 }
 

@@ -3,6 +3,10 @@ using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Reflection.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,22 +15,27 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<IRepository, InMemoryRepository>();
 
+var connectionStringSql = builder.Configuration.GetConnectionString("Default");
+var connectionStringSecurity = builder.Configuration.GetConnectionString("Security");
+
 //db context
 builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("Default")
+    connectionStringSql
 ));
 
 //Identity.
 builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("Security")
+    connectionStringSecurity
 ));
+
+builder.Services.AddTransient<SeedData>();
 
 //password requirements
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(config => {
     config.Password.RequireDigit = false;
-    config.Password.RequiredLength = 4;
-    config.Password.RequireLowercase = false;
-    config.Password.RequireUppercase = false;
+    config.Password.RequiredLength = 6;
+    config.Password.RequireLowercase = true;
+    config.Password.RequireUppercase = true;
     config.Password.RequireNonAlphanumeric = false;
 })
     .AddEntityFrameworkStores<SecurityContext>()
@@ -42,27 +51,23 @@ builder.Services.ConfigureApplicationCookie(config => {
 
 //identity policy an claims
 builder.Services.AddAuthorization(config => {
-    config.AddPolicy("Claim.test", policy => {
-        policy.RequireClaim("UserName", "test", "test2");
+    config.AddPolicy("Staff", policy => {
+        policy.RequireClaim("userType", "canteenStaff");
+    });
+
+    config.AddPolicy("Student", policy => {
+        policy.RequireClaim("userType", "student");
     });
 });
 
 var app = builder.Build();
 
 //Seed date for DBContext and securityContext
-//using (var scope = app.Services.CreateScope()) {
-//    try {
-//        var dbContext = scope.ServiceProvider.GetRequiredService<PacketContext>();
-//        var identityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
-
-//        if (!dbContext.canteen.Any()) {
-//            new SeedData(dbContext, identityContext).SeedDatabase();
-//        }
-
-//    } catch {
-//        throw;
-//    }
-//}
+using (var scope = app.Services.CreateScope()) {
+    var service = scope.ServiceProvider;
+    var dataSeeder = service.GetService<SeedData>();
+    dataSeeder?.SeedDatabase();
+}
 
 
 // Configure the HTTP request pipeline.
@@ -90,3 +95,5 @@ app.MapControllerRoute(
 
 
 app.Run();
+
+

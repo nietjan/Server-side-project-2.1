@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure {
-    public class PacketContext : DbContext {
+    public class PacketContext : DbContext, IDisposable {
         public PacketContext(DbContextOptions<PacketContext> options) : base(options) {
 
         }
@@ -21,6 +21,7 @@ namespace Infrastructure {
             builder.Entity<CantineStaffMember>().HasKey(i => i.id);
             builder.Entity<ExampleProductList>().HasKey(i => i.id);
         }
+
 
         public DbSet<Product> products { get; set; }
         public DbSet<Packet> packets { get; set; }

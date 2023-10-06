@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 namespace DomainModel {
     public class Student {
         [Key]
-        public string id { get; set; }
+        public int id { get; set; }
+
+        public string securityId { get; set; } = string.Empty;
 
         public required string name { get; set; }
 

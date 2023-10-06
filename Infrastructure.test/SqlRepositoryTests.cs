@@ -281,7 +281,7 @@ namespace Infrastructure.test {
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CantineStaffMember() {id="1", cantine = canteen, name="" });
+            _context.canteenStaffMembers.Add(new CantineStaffMember() {securityId="1", cantine = canteen, name="" });
             await _context.SaveChangesAsync();
 
             //Act
@@ -303,7 +303,7 @@ namespace Infrastructure.test {
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CantineStaffMember() { id = "1", cantine = canteen, name = "" });
+            _context.canteenStaffMembers.Add(new CantineStaffMember() { securityId = "1", cantine = canteen, name = "" });
             await _context.SaveChangesAsync();
 
             //Act

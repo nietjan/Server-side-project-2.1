@@ -108,7 +108,7 @@ namespace Infrastructure {
                 typeOfMeal = TypeOfMeal.Bread,
                 price = 10,
                 eighteenUp = false,
-                reservedBy=new Student() {id="test@test.com", name="", studentNumber=123, studyCity = City.Breda},
+                reservedBy=new Student() {securityId="test@test.com", name="", studentNumber=123, studyCity = City.Breda},
                 exampleProductList = productsExampleList.ElementAt(0)
             },
         };
@@ -131,8 +131,8 @@ namespace Infrastructure {
             return packets.Where(i => i.reservedBy == null);
         }
 
-        public IEnumerable<Packet> GetReservedPackets(string studentId) {
-            return packets.Where(i => i.reservedBy != null).Where(i => i.reservedBy.id == studentId);
+        public IEnumerable<Packet> GetReservedPackets(string studentSecurityId) {
+            return packets.Where(i => i.reservedBy != null).Where(i => i.reservedBy.securityId == studentSecurityId);
         }
 
         public Packet? GetSinglePacket(int id) {
@@ -145,7 +145,7 @@ namespace Infrastructure {
             }
         }
 
-        public async Task<string>? reservePacket(int packetId, string studentId) {
+        public async Task<string>? reservePacket(int packetId, string studentSecurityId) {
             var list = packets.Where(i => i.id == packetId);
 
             if (list.Count() == 0) {
@@ -159,7 +159,7 @@ namespace Infrastructure {
 
             //check if user already reserved a package for that day
             if (packets.Where(i => i.reservedBy != null)
-                .Where(i => i.reservedBy.id == studentId
+                .Where(i => i.reservedBy.securityId == studentSecurityId
             && i.startPickup.Value.Day == packet.startPickup.Value.Day 
             && i.startPickup.Value.Month == packet.startPickup.Value.Month
             && i.startPickup.Value.Year == packet.startPickup.Value.Year)
@@ -168,7 +168,7 @@ namespace Infrastructure {
             }
 
 
-            packet.reservedBy = new Student() { id=studentId, name="", studentNumber=123, studyCity=City.Breda};
+            packet.reservedBy = new Student() { securityId=studentSecurityId, name="", studentNumber=123, studyCity=City.Breda};
             return null;
         }
 
@@ -180,18 +180,18 @@ namespace Infrastructure {
             return packets.Where(i => i.cantine.id == id).OrderBy(i => i.startPickup);
         }
 
-        public IEnumerable<Cantine> GetCantines(string userId) {
+        public IEnumerable<Cantine> GetCantines(string staffSecurityId) {
             //In real Repo should return all cantines of table cantine and returns userId Canteen first
             return new List<Cantine>() { cantine, cantine, cantine};
         }
 
-        public bool hasReservedForSpecificDay(DateTime? packetDate,  string studentId) {
+        public bool hasReservedForSpecificDay(DateTime? packetDate,  string studentSecurityId) {
             if(packetDate == null) {
                 return false;
             }
 
             if (packets.Where(i => i.reservedBy != null)
-                .Where(i => i.reservedBy.id == studentId
+                .Where(i => i.reservedBy.securityId == studentSecurityId
             && i.startPickup.Value.Day == packetDate.Value.Day
             && i.startPickup.Value.Month == packetDate.Value.Month
             && i.startPickup.Value.Year == packetDate.Value.Year)
