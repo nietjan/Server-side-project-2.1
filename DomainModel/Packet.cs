@@ -26,8 +26,7 @@ namespace DomainModel
         [Required(ErrorMessage = "Please choose a end date")]
         public DateTime? endPickup { get; set;}
 
-        //Or string or Id depends on identity
-        public string? reservedBy { get; set; }
+        public Student? reservedBy { get; set; }
 
         [Required(ErrorMessage = "Please choose the type of meal")]
         public TypeOfMeal? typeOfMeal { get; set; }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace UserInterface.Controllers {
     public class PacketController : Controller {
         private IRepository repository;
-        private static readonly string reservedEmail = "test@test.com";
+        private static readonly string reservedid = "test@test.com";
 
         public PacketController(IRepository repository) {
             this.repository = repository;
@@ -21,7 +21,7 @@ namespace UserInterface.Controllers {
         }
 
         public IActionResult Reserved() {
-            var list = repository.GetReservedPackets(reservedEmail);
+            var list = repository.GetReservedPackets(reservedid);
             return View("List", list);
         }
 

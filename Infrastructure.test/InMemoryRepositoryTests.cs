@@ -257,7 +257,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var list = repository.GetCantines(1);
+            var list = repository.GetCantines("1");
 
             //Assert
             Assert.NotNull(list);

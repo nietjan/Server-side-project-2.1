@@ -1,8 +1,8 @@
 using DomainServices;
 using Infrastructure;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,12 +16,12 @@ builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("Default")
 ));
 
-//Identity
+//Identity.
 builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("Security")
 ));
 
-//paswoord requirements
+//password requirements
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(config => {
     config.Password.RequireDigit = false;
     config.Password.RequiredLength = 4;
@@ -49,20 +49,20 @@ builder.Services.AddAuthorization(config => {
 
 var app = builder.Build();
 
-//Seed date for DBContext and securtityContext
-using (var scope = app.Services.CreateScope()) {
-    try {
-        var dbContext = scope.ServiceProvider.GetRequiredService<PacketContext>();
-        var identityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
+//Seed date for DBContext and securityContext
+//using (var scope = app.Services.CreateScope()) {
+//    try {
+//        var dbContext = scope.ServiceProvider.GetRequiredService<PacketContext>();
+//        var identityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
 
-        if (!dbContext.canteen.Any()) {
-            new SeedData(dbContext, identityContext).SeedDatabase();
-        }
+//        if (!dbContext.canteen.Any()) {
+//            new SeedData(dbContext, identityContext).SeedDatabase();
+//        }
 
-    } catch {
-        throw;
-    }
-}
+//    } catch {
+//        throw;
+//    }
+//}
 
 
 // Configure the HTTP request pipeline.

@@ -23,7 +23,7 @@ namespace Infrastructure {
             return true; 
         }
 
-        public IEnumerable<Cantine> GetCantines(int userId) {
+        public IEnumerable<Cantine> GetCantines(string userId) {
             var canteenUser = context.canteenStaffMembers.Where(i => i.id == userId).First();
             //If user does not have canteen, return all canteens;
             if(canteenUser == null) {
@@ -34,7 +34,7 @@ namespace Infrastructure {
             var list = new List<Cantine>() {
                 canteenUser.cantine,
             };
-            return list.Concat(context.canteen.Where(i => i.id != canteenUser.id));
+            return list.Concat(context.canteen.Where(i => !i.id.Equals(canteenUser.id)));
         }
 
         public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal) {
@@ -69,9 +69,9 @@ namespace Infrastructure {
                 .OrderBy(i => i.startPickup);
         }
 
-        public IEnumerable<Packet> GetReservedPackets(string email) {
+        public IEnumerable<Packet> GetReservedPackets(string studentId) {
             //returns all packets that are reserved by a specific email
-            return context.packets.Where(i => i.reservedBy == email);
+            return context.packets.Where(i => i.reservedBy != null).Where(i => i.reservedBy.id == studentId);
         }
 
         public Packet? GetSinglePacket(int id) {
@@ -84,12 +84,13 @@ namespace Infrastructure {
             }
         }
 
-        public bool hasReservedForSpecificDay(DateTime? packetDate, string personEmail) {
+        public bool hasReservedForSpecificDay(DateTime? packetDate, string studentId) {
             if (packetDate == null) {
                 return false;
             }
 
-            if (context.packets.Where(i => i.reservedBy == personEmail
+            if (context.packets.Where(i => i.reservedBy != null)
+                .Where(i => i.reservedBy.id == studentId
             && i.startPickup.Value.Day == packetDate.Value.Day
             && i.startPickup.Value.Month == packetDate.Value.Month
             && i.startPickup.Value.Year == packetDate.Value.Year)
@@ -99,7 +100,7 @@ namespace Infrastructure {
             return false;
         }
 
-        public async Task<string>? reservePacket(int packetId, string personEmail) {
+        public async Task<string>? reservePacket(int packetId, string studentId) {
             var list = context.packets.Where(i => i.id == packetId);
 
             if (list.Count() == 0) {
@@ -112,7 +113,8 @@ namespace Infrastructure {
             }
 
             //check if user already reserved a package for that day
-            if (context.packets.Where(i => i.reservedBy == personEmail
+            if (context.packets.Where(i => i.reservedBy != null)
+                .Where(i => i.reservedBy.id == studentId
             && i.startPickup.Value.Day == packet.startPickup.Value.Day
             && i.startPickup.Value.Month == packet.startPickup.Value.Month
             && i.startPickup.Value.Year == packet.startPickup.Value.Year)
@@ -120,8 +122,12 @@ namespace Infrastructure {
                 return "Already reserved a package";
             }
 
+            var studentList = context.students.Where(i => i.id == studentId);
+            if(studentList.Count() != 1) { 
+                return "Student cannot be found";
+            }
 
-            packet.reservedBy = personEmail;
+            packet.reservedBy = studentList.First();
             await context.SaveChangesAsync();
             return null;
         }

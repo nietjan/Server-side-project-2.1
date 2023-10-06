@@ -1,4 +1,5 @@
 ﻿using DomainModel;
+using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Infrastructure {
+namespace Infrastructure
+{
     public class SeedData {
         private readonly PacketContext _context;
         private readonly SecurityContext _securityContext;
@@ -20,7 +22,7 @@ namespace Infrastructure {
         public void SeedDatabase() {
             _context.Database.Migrate();
             if (_context.canteen?.Count() == 0) {
-                seedDbContext();
+                //seedDbContext();
             }
 
             
@@ -32,10 +34,10 @@ namespace Infrastructure {
                     new Cantine() {id=2, location = "FifthLa", city = DomainModel.enums.City.Breda, servesHotMeals = true },
                     new Cantine() {id=3, location = "ld", city = DomainModel.enums.City.Breda, servesHotMeals = false } };
 
-            CantineStaffMember[] staff = {
-                    new CantineStaffMember() {id=1, cantine = canteens.ElementAt(0), name = "Staff1-Hogeschoolaan", staffNumber = 123 },
-                    new CantineStaffMember() {id = 2,  cantine = canteens.ElementAt(1), name = "Staff2-FifhtLa", staffNumber = 234 },
-                    new CantineStaffMember() {id=3, cantine = canteens.ElementAt(2), name = "Staff3-Ld", staffNumber = 345 }};
+            CantineStaffMember[] staff = { //Add id of security
+                    new CantineStaffMember() {cantine = canteens.ElementAt(0), name = "Staff1-Hogeschoolaan", staffNumber = 123 },
+                    new CantineStaffMember() {cantine = canteens.ElementAt(1), name = "Staff2-FifhtLa", staffNumber = 234 },
+                    new CantineStaffMember() {cantine = canteens.ElementAt(2), name = "Staff3-Ld", staffNumber = 345 }};
 
             Product[] productsList = {
                     new Product() {id=1, alcoholic=true, name="bread1" },

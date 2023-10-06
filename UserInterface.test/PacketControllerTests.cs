@@ -23,7 +23,7 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Diner,
                 price = 8,
                 eighteenUp = true,
-                reservedBy = "test@test.com"
+                reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }
             },
             new Packet() {
                 id = 2,
@@ -35,7 +35,7 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 5,
                 eighteenUp = true,
-                reservedBy = "test@test.com"
+                reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }
             },new Packet() {
                 id = 3,
                 name = "Packet3",
@@ -46,7 +46,7 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Bread,
                 price = 10,
                 eighteenUp = true,
-                reservedBy = "test@test.com"
+                reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }
             } 
         };
 
@@ -88,7 +88,7 @@ namespace UserInterface.test {
             //Arrange
             var repoMock = Substitute.For<IRepository>();
             repoMock.GetPacketsOfCantine(1).Returns((packets).AsQueryable());
-            repoMock.GetCantines(1).Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine}.AsQueryable());
+            repoMock.GetCantines("1").Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine}.AsQueryable());
 
             var sut = new PacketController(repoMock);
 
@@ -105,7 +105,7 @@ namespace UserInterface.test {
             //Arrange
             var repoMock = Substitute.For<IRepository>();
             repoMock.GetPacketsOfCantine(1).Returns((packets).AsQueryable());
-            repoMock.GetCantines(1).Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine }.AsQueryable());
+            repoMock.GetCantines("1").Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine }.AsQueryable());
 
             var sut = new PacketController(repoMock);
 
@@ -121,7 +121,7 @@ namespace UserInterface.test {
         public void Canteen_Content_With_Invalid_Id_Should_Redirect() {
             //Arrange
             var repoMock = Substitute.For<IRepository>();
-            repoMock.GetCantines(1).Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine }.AsQueryable());
+            repoMock.GetCantines("1").Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine }.AsQueryable());
             repoMock.GetPacketsOfCantine(-1).ReturnsNull();
 
             var sut = new PacketController(repoMock);
@@ -234,7 +234,7 @@ namespace UserInterface.test {
         public void Update_Get_Should_Redirect_When_Packet_Is_Reserved() {
             //Arrange
             var repoMock = Substitute.For<IRepository>();
-            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "", reservedBy="", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "", reservedBy=new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
 
             var sut = new PacketController(repoMock);
 

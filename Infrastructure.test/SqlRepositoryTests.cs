@@ -79,7 +79,7 @@ namespace Infrastructure.test {
             //Arrange
             Packet packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             Packet packet2 = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
-            Packet packet3 = new Packet() { name = "", reservedBy="", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet3 = new Packet() { name = "", reservedBy=new Student() { name="", studentNumber=123, studyCity = City.Breda}, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             
             _context.Add(packet);
             _context.Add(packet2);
@@ -105,7 +105,7 @@ namespace Infrastructure.test {
                 packetList = new List<Packet>() {
                     new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
                     new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
-                    new Packet() { name = "", reservedBy = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
+                    new Packet() { name = "", reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
 
                 }
             });
@@ -131,7 +131,7 @@ namespace Infrastructure.test {
                 packetList = new List<Packet>() {
                     new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
                     new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
-                    new Packet() { name = "", reservedBy = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
+                    new Packet() { name = "", reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 },
 
                 }
             });
@@ -149,7 +149,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Get_Packets_Whom_Are_Reserved_With_Correct_Email() {
             //Arrange
-            var packet = new Packet() { name = "", reservedBy = "test@test.com", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var packet = new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -165,7 +165,7 @@ namespace Infrastructure.test {
             //Arrange
             SqlRepository repository = new SqlRepository(_context);
             
-            _context.packets.Add(new Packet() { name = "", reservedBy = "test@test.com", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
+            _context.packets.Add(new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
             await _context.SaveChangesAsync();
 
             //Act
@@ -179,7 +179,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Get_Single_Product_With_Correct_Id() {
             //Arrange
-            var packet = new Packet() { name = "", id=1, reservedBy = "test@test.com", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var packet = new Packet() { name = "", id=1, reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -196,7 +196,7 @@ namespace Infrastructure.test {
         [InlineData(2)]
         public async void Get_Single_Product_With_Incorrect_Id_That_Is_Null(int id) {
             //Arrange
-            var packet = new Packet() { name = "", reservedBy = "test@test.com", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var packet = new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -259,7 +259,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Reserve_Packet_With_Id_Of_Already_Reserved_Package_Should_Return_Package_Already_Reserved() {
             //Arrange
-            var packet = new Packet() { name = "", id=1, reservedBy = "test@test.com", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var packet = new Packet() { name = "", id=1, reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -281,11 +281,11 @@ namespace Infrastructure.test {
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CantineStaffMember() { cantine = canteen, name="" });
+            _context.canteenStaffMembers.Add(new CantineStaffMember() {id="1", cantine = canteen, name="" });
             await _context.SaveChangesAsync();
 
             //Act
-            var list = repository.GetCantines(1);
+            var list = repository.GetCantines("1");
 
             //Assert
             Assert.NotNull(list);
@@ -303,11 +303,11 @@ namespace Infrastructure.test {
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CantineStaffMember() { cantine = canteen, name = "" });
+            _context.canteenStaffMembers.Add(new CantineStaffMember() { id = "1", cantine = canteen, name = "" });
             await _context.SaveChangesAsync();
 
             //Act
-            var list = repository.GetCantines(1);
+            var list = repository.GetCantines("1");
 
             //Assert
             Assert.NotNull(list);
@@ -319,7 +319,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Has_Reserved_For_Specific_Day_With_Date_Null_Should_Return_False() {
             //Arrange
-            Packet packet = new Packet() { name = "", reservedBy="test@test.com", id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet = new Packet() { name = "", reservedBy=new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -333,7 +333,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Has_Reserved_For_Specific_Day_With_Date_Where_Is_Reserved_Should_Return_True() {
             //Arrange
-            Packet packet = new Packet() { name = "", reservedBy = "test@test.com", id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet = new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -347,7 +347,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Has_Reserved_For_Specific_Day_With_Date_Where_Is_Not_Reserved_Should_Return_False() {
             //Arrange
-            Packet packet = new Packet() { name = "", reservedBy = "test@test.com", id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet = new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 

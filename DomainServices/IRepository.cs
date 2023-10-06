@@ -12,16 +12,16 @@ namespace DomainServices {
 
         //Return packets whith correct id, with non existing id returns null, contents should be orderd on date
         public IEnumerable<Packet>? GetPacketsOfCantine(int id);
-        public IEnumerable<Packet> GetReservedPackets(string email);
+        public IEnumerable<Packet> GetReservedPackets(string studentId);
 
         //Returns all canteens, will always return own canteen first
-        public IEnumerable<Cantine> GetCantines(int userId);
+        public IEnumerable<Cantine> GetCantines(string userId);
 
         public Packet? GetSinglePacket(int id);
         public Task<bool> AddPacket(Packet packet);
         public Task<bool> UpdatePacket(Packet packet);
         public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal);
-        public Task<string>? reservePacket(int packetId, string personEmail);
-        public bool hasReservedForSpecificDay(DateTime? date, string personEmail);
+        public Task<string>? reservePacket(int packetId, string studentId);
+        public bool hasReservedForSpecificDay(DateTime? date, string studentId);
     }
 }

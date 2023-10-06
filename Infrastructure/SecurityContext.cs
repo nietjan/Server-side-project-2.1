@@ -6,8 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure {
-    public class SecurityContext : IdentityDbContext {
-        public SecurityContext(DbContextOptions<SecurityContext> options) : base(options) { }
+namespace Infrastructure.Identity
+{
+    public class SecurityContext : IdentityDbContext
+    {
+        public SecurityContext(DbContextOptions<SecurityContext> options)
+            : base(options)
+        {
+        }
     }
 }
