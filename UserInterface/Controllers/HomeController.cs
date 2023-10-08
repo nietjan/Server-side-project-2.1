@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ApplicationServices;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,14 +9,17 @@ namespace UserInterface.Controllers {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IUserSession _userSession;
 
         public HomeController(
             ILogger<HomeController> logger, 
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager) {
+            SignInManager<IdentityUser> signInManager,
+            IUserSession userSession) {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _userSession = userSession;
         }
 
         public IActionResult Index() {
@@ -40,6 +44,12 @@ namespace UserInterface.Controllers {
             } else ModelState.AddModelError("CustomError", "User cannot be found");
 
             return View();
+        }
+
+        public async Task<IActionResult> Logout() {
+            //logout user and remove userIdentity from userSession
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login");
         }
 
         public IActionResult Privacy() {

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace Infrastructure
 {
     public class SeedData {
+        private readonly string password = "Secret";
         private readonly PacketContext _dbContext;
         private readonly SecurityContext _securityContext;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -99,7 +100,7 @@ namespace Infrastructure
                 PhoneNumber = "2345678901",
             };
 
-            string password = "Secret";
+            
 
             var result = await _userManager.CreateAsync(user1, password);
             if (result.Succeeded) {
@@ -153,8 +154,6 @@ namespace Infrastructure
                 Email = "student2@avans.nl",
                 PhoneNumber = "4567890123",
             };
-
-            string password = "Secret";
 
             var result = await _userManager.CreateAsync(user1, password);
             if (result.Succeeded) {

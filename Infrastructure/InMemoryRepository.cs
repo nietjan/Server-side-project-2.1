@@ -222,5 +222,9 @@ namespace Infrastructure {
             packets.Add(packet);
             return true;
         }
+
+        public Cantine? GetCantine(string staffSecurityId) {
+            return cantine;
+        }
     }
 }

@@ -213,14 +213,32 @@ namespace Infrastructure.test {
         public async void Reserve_Packet_With_Correct_Info_Should_Return_Null() {
             //Arrange
             var packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var student = new Student() { securityId = "234324234", name = "", studentNumber = 123, studyCity = City.Breda };
             _context.packets.Add(packet);
+            _context.students.Add(student);
+            
             await _context.SaveChangesAsync();
 
             //Act
-            var result = await repository.reservePacket(packet.id, "test@test.nl");
+            var result = await repository.reservePacket(packet.id, student.securityId);
 
             //Assert
             Assert.Null(result);
+        }
+
+        [Fact]
+        public async void Reserve_Packet_With_Not_Existing_Student_Should_Return_Student_Cannot_Be_Found() {
+            //Arrange
+            var packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.reservePacket(packet.id, "23434");
+
+            //Assert
+            Assert.Equal("Student cannot be found", result);
         }
 
         [Theory]
@@ -333,12 +351,12 @@ namespace Infrastructure.test {
         [Fact]
         public async void Has_Reserved_For_Specific_Day_With_Date_Where_Is_Reserved_Should_Return_True() {
             //Arrange
-            Packet packet = new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet = new Packet() { name = "", reservedBy = new Student() {securityId="34675345345", name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, id = 4, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now, "test@test.com");
+            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now, "34675345345");
 
             //Assert
             Assert.True(hasReserved);

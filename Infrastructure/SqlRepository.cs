@@ -89,7 +89,7 @@ namespace Infrastructure {
                 return false;
             }
 
-            if (context.packets.Where(i => i.reservedBy != null)
+            if(context.packets.Where(i => i.reservedBy != null)
                 .Where(i => i.reservedBy.securityId == studentSecurityId
             && i.startPickup.Value.Day == packetDate.Value.Day
             && i.startPickup.Value.Month == packetDate.Value.Month
@@ -101,12 +101,13 @@ namespace Infrastructure {
         }
 
         public async Task<string>? reservePacket(int packetId, string studentSecurityId) {
+            //check if package exists
             var list = context.packets.Where(i => i.id == packetId);
-
             if (list.Count() == 0) {
                 return "Packet not found";
             }
 
+            //check if package is reserved
             var packet = list.First();
             if (packet.reservedBy != null) {
                 return "Packet already reserved";
@@ -122,11 +123,13 @@ namespace Infrastructure {
                 return "Already reserved a package";
             }
 
+            //check if student exists
             var studentList = context.students.Where(i => i.securityId == studentSecurityId);
             if(studentList.Count() != 1) { 
                 return "Student cannot be found";
             }
 
+            //reserve packet
             packet.reservedBy = studentList.First();
             await context.SaveChangesAsync();
             return null;
@@ -140,6 +143,15 @@ namespace Infrastructure {
             context.Update(packet);
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public Cantine? GetCantine(string staffSecurityId) {
+            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId);
+            //If user does not have canteen, return all canteens;
+            if (userCanteenList.Count() != 1) {
+                return null;
+            }
+            return userCanteenList.First().cantine;
         }
     }
 }

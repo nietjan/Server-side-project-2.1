@@ -1,29 +1,34 @@
-﻿using DomainServices;
+﻿using ApplicationServices;
+using DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UserInterface.Controllers {
     [Authorize]
     public class PacketController : Controller {
-        private IRepository repository;
-        private static readonly string reservedid = "test@test.com";
+        private IRepository _repository;
+        private IUserSession _userSession;
 
-        public PacketController(IRepository repository) {
-            this.repository = repository;
+        public PacketController(
+            IRepository repository,
+            IUserSession userSession) {
+            _repository = repository;
+            _userSession = userSession;
         }
 
         public IActionResult List(int id) {
             //If user is cantine staff redidirect to CanteenContents
+            
             if (false) {
                 return RedirectToAction("CanteenContents");
             }
 
-            var list = repository.GetPackets();
+            var list = _repository.GetPackets();
             return View(list);
         }
 
         public IActionResult Reserved() {
-            var list = repository.GetReservedPackets(reservedid);
+            var list = _repository.GetReservedPackets(_userSession.GetUserIdentityId());
             return View("List", list);
         }
 
@@ -34,7 +39,7 @@ namespace UserInterface.Controllers {
                 id = 1;
             }
 
-            var content = repository.GetPacketsOfCantine(id);
+            var content = _repository.GetPacketsOfCantine(id);
 
             //check if there is content 
             if (content == null) {
@@ -59,12 +64,12 @@ namespace UserInterface.Controllers {
 
             if (ModelState.IsValid) {
                 //set cantine connected to user
-                packet.cantine = Infrastructure.InMemoryRepository.cantine;
+                packet.cantine = _repository.GetCantine(_userSession.GetUserIdentityId());
 
                 //add example products
-                packet.exampleProductList = repository.GetExampleProducts(packet.typeOfMeal);
+                packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
 
-                var completed = await repository.AddPacket(packet);
+                var completed = await _repository.AddPacket(packet);
                 if (!completed) {
                     ModelState.AddModelError("CustomError", "Something went wrong, please try again");
                     return View();
@@ -78,7 +83,7 @@ namespace UserInterface.Controllers {
         [Authorize(Policy = "canteenStaff")]
         [HttpGet]
         public IActionResult Update(int id) {
-            var packet = repository.GetSinglePacket(id);
+            var packet = _repository.GetSinglePacket(id);
             
             //if packet does not exist or is reserved it can not be updated
             if(packet == null) {
@@ -102,9 +107,9 @@ namespace UserInterface.Controllers {
                 packet.cantine = Infrastructure.InMemoryRepository.cantine;
 
                 //add example products
-                packet.exampleProductList = repository.GetExampleProducts(packet.typeOfMeal);
+                packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
 
-                var completed = await repository.UpdatePacket(packet);
+                var completed = await _repository.UpdatePacket(packet);
                 if (!completed) {
                     ModelState.AddModelError("CustomError", "Something went wrong, please try again");
                     return View();
@@ -120,7 +125,7 @@ namespace UserInterface.Controllers {
             if(id == 0) {
                 return RedirectToAction("Index", "Home");
             }
-            var packet = repository.GetSinglePacket(id);
+            var packet = _repository.GetSinglePacket(id);
 
             //if packet == null, than packet does not exist
             if (packet == null) {
@@ -131,7 +136,7 @@ namespace UserInterface.Controllers {
         }
 
         public async Task<IActionResult> reservePacket(int id) {          
-            var packet = repository.GetSinglePacket(id);
+            var packet = _repository.GetSinglePacket(id);
 
             //if packet == null, than packet does not exist
             if (packet == null) {
@@ -140,7 +145,7 @@ namespace UserInterface.Controllers {
             
             //if reserve packet is succes go back to detail page, otherwise go to list page 
             //TODO: change email to email of user
-            var answer = await repository.reservePacket(id, "test@test.com");
+            var answer = await _repository.reservePacket(id, "test@test.com");
             return RedirectToAction("Detail", new { id = id });
         }
     }

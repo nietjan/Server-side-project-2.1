@@ -1,19 +1,29 @@
+using ApplicationServices;
 using DomainServices;
 using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.Reflection.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+////add session
+//builder.Services.AddDistributedMemoryCache();
+
+//builder.Services.AddSession(options => {
+//    options.IdleTimeout = TimeSpan.FromHours(1);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
 builder.Services.AddSingleton<IRepository, InMemoryRepository>();
+
+builder.Services.AddTransient<SeedData>();
+
+builder.Services.AddScoped<IUserSession, UserSessionIdentity>();
 
 var connectionStringSql = builder.Configuration.GetConnectionString("Default");
 var connectionStringSecurity = builder.Configuration.GetConnectionString("Security");
@@ -28,8 +38,6 @@ builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlServer(
     connectionStringSecurity
 ));
 
-builder.Services.AddTransient<SeedData>();
-
 //password requirements
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(config => {
     config.Password.RequireDigit = false;
@@ -43,6 +51,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(config => {
 
 //identity paths
 builder.Services.ConfigureApplicationCookie(config => {
+    //config.Cookie.Expiration = TimeSpan.FromHours(1);
     config.Cookie.Name = "Identity";
     config.LoginPath = "/Home/Login";
     config.LogoutPath = "/Home/LogOut";
@@ -62,7 +71,7 @@ builder.Services.AddAuthorization(config => {
 
 var app = builder.Build();
 
-//Seed date for DBContext and securityContext
+//Seed date for PacketContext and SecurityContext
 using (var scope = app.Services.CreateScope()) {
     var service = scope.ServiceProvider;
     var dataSeeder = service.GetService<SeedData>();
@@ -83,6 +92,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+//app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

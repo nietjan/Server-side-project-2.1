@@ -17,6 +17,7 @@ namespace DomainServices {
         //Returns all canteens, will always return own canteen first
         public IEnumerable<Cantine> GetCantines(string staffSecurityId);
 
+        public Cantine? GetCantine(string staffSecurityId);
         public Packet? GetSinglePacket(int id);
         public Task<bool> AddPacket(Packet packet);
         public Task<bool> UpdatePacket(Packet packet);

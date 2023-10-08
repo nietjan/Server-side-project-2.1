@@ -1,5 +1,6 @@
 ﻿@model DomainModel.Packet
 @inject DomainServices.IRepository repository
+@inject ApplicationServices.IUserSession userSession
 @{
 
 }
@@ -27,7 +28,7 @@
                 <p class="red-bold-Text">Reserved</p>
             }
             
-            @if (repository.hasReservedForSpecificDay(Model?.startPickup, "test@test.com") || Model.reservedBy != null) {
+            @if (repository.hasReservedForSpecificDay(Model?.startPickup, userSession.GetUserIdentityId()) || Model.reservedBy != null) {
                 <div class="button-middle-small-screen">
                     <button disabled onclick="location.href='@Url.Action("reservePacket", "Packet", new {id = Model?.id})'">Reserve</button>
                 </div>
