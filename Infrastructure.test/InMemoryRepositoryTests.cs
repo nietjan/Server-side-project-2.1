@@ -3,6 +3,8 @@ using DomainModel;
 using Infrastructure;
 using System.ComponentModel;
 using Xunit;
+using DomainServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.test {
     public class InMemoryRepositoryTests {
@@ -248,6 +250,57 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.Equal("Packet already reserved", result);
+        }
+
+        //UnreservePacket
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Not_Reserved_Package_Should_Return_Package_Was_Not_Reserved() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.UnreservePacket(1, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Packet was not reserved", result);
+        }
+
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Not_Existing_Packet_Should_Return_Package_Not_Found() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.UnreservePacket(10, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Packet not found", result);
+        }
+
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Package_Reserved_By_Another_User_Should_Return_Package_Is_Not_Reserved_By_User() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.UnreservePacket(3, "DifferentString");
+
+            //Assert
+            Assert.Equal("Packet is not reserved by user", result);
+        }
+
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Package_That_Is_Reserved_By_User_Should_Return_Null() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+            var packet = new Packet() { reservedBy = new Student() { securityId = "test@test.com", name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, name = "", id = 10, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            repository.packets.Add(packet);
+
+            //Act
+            var result = await repository.UnreservePacket(10, "test@test.com");
+
+            //Assert
+            Assert.Null(result);
         }
 
         //GetCantines

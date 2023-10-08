@@ -28,10 +28,26 @@
                 <p class="red-bold-Text">Reserved</p>
             }
             
-            @if (repository.HasReservedForSpecificDay(Model?.startPickup, userSession.GetUserIdentityId()) || Model.reservedBy != null) {
-                <div class="button-middle-small-screen">
-                    <button disabled onclick="location.href='@Url.Action("reservePacket", "Packet", new {id = Model?.id})'">Reserve</button>
-                </div>
+            @* check if user has already reserved a package or user is not a student*@
+            @if (repository.HasReservedForSpecificDay(Model?.startPickup, userSession.GetUserIdentityId()) || repository.UserIsCanteenStaff(userSession.GetUserIdentityId()) || Model.reservedBy != null) {
+                @* checks if packet is reserved and if so if it is reserved by the user*@
+                @if (Model.reservedBy != null) {
+                    @if (Model?.reservedBy?.securityId == userSession.GetUserIdentityId()) {
+                        @* package is reserved by user *@
+                        <div class="button-middle-small-screen">
+                            <button onclick="location.href='@Url.Action("unreservePacket", "Packet", new {id = Model?.id})'">Reserve</button>
+                        </div>
+                    } else {
+                        @* package is reserved by an other user *@
+                        <div class="button-middle-small-screen">
+                            <button disabled>Reserve</button>
+                        </div>
+                    }
+                } else {
+                    <div class="button-middle-small-screen">
+                        <button disabled>Reserve</button>
+                    </div>
+                }
             } else{
                 <div class="button-middle-small-screen">
                     <button onclick="location.href='@Url.Action("reservePacket", "Packet", new {id = Model?.id})'">Reserve</button>

@@ -23,6 +23,7 @@ namespace DomainServices {
         public Task<bool> UpdatePacket(Packet packet);
         public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal);
         public Task<string>? ReservePacket(int packetId, string studentSecurityId);
+        public Task<string>? UnreservePacket(int packetId, string studentSecurityId);
         public bool HasReservedForSpecificDay(DateTime? date, string studentSecurityId);
         public bool UserIsCanteenStaff(string securityId);
     }

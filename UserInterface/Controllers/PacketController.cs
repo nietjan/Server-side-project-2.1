@@ -17,6 +17,7 @@ namespace UserInterface.Controllers {
             _userSession = userSession;
         }
 
+        [AllowAnonymous]
         public IActionResult List(int id) {
             //If user is cantine staff redidirect to CanteenContents
             
@@ -33,7 +34,7 @@ namespace UserInterface.Controllers {
             return View("List", list);
         }
 
-        [Authorize(Policy = "canteenStaff")]
+        [Authorize(Policy = "Staff")]
         public IActionResult CanteenContents(int id) {
             if (id == 0) {
                 //TODO: get Id from User;
@@ -59,7 +60,7 @@ namespace UserInterface.Controllers {
             return View();
         }
 
-        [Authorize(Policy = "canteenStaff")]
+        [Authorize(Policy = "Staff")]
         [HttpPost]
         public async Task<IActionResult> Register(DomainModel.Packet packet) {    
             if(packet.startPickup >= packet.endPickup) {
@@ -84,7 +85,7 @@ namespace UserInterface.Controllers {
             }
         }
 
-        [Authorize(Policy = "canteenStaff")]
+        [Authorize(Policy = "Staff")]
         [HttpGet]
         public IActionResult Update(int id) {
             var packet = _repository.GetSinglePacket(id);
@@ -99,7 +100,7 @@ namespace UserInterface.Controllers {
             return View(packet);
         }
 
-        [Authorize(Policy = "canteenStaff")]
+        [Authorize(Policy = "Staff")]
         [HttpPost]
         public async Task<IActionResult> Update(DomainModel.Packet packet) {
             if (packet.startPickup >= packet.endPickup) {
@@ -124,6 +125,7 @@ namespace UserInterface.Controllers {
             }
         }
 
+        [AllowAnonymous]
         public IActionResult Detail(int id) {
             //if id == 0, than redirect to home
             if(id == 0) {
@@ -139,6 +141,7 @@ namespace UserInterface.Controllers {
             return View(packet);
         }
 
+        [Authorize(Policy = "Student")]
         public async Task<IActionResult> reservePacket(int id) {          
             var packet = _repository.GetSinglePacket(id);
 
@@ -147,9 +150,24 @@ namespace UserInterface.Controllers {
                 return RedirectToAction("List", new { id = 0 });
             }
             
-            //if reserve packet is success go back to detail page, otherwise go to list page 
+            //if reserve/unreserve packet is success go back to detail page, otherwise go to list page 
             var answer = await _repository.ReservePacket(id, _userSession.GetUserIdentityId());
             if(answer == null) return RedirectToAction("Detail", new { id = id });
+            else return RedirectToAction("list", new { id = id });
+        }
+
+        [Authorize(Policy = "Student")]
+        public async Task<IActionResult> unreservePacket(int id) {
+            var packet = _repository.GetSinglePacket(id);
+
+            //if packet == null, than packet does not exist
+            if (packet == null) {
+                return RedirectToAction("List", new { id = 0 });
+            }
+
+            //if reserve/unreserve packet is success go back to detail page, otherwise go to list page 
+            var answer = await _repository.UnreservePacket(id, _userSession.GetUserIdentityId());
+            if (answer == null) return RedirectToAction("Detail", new { id = id });
             else return RedirectToAction("list", new { id = id });
         }
     }

@@ -22,7 +22,7 @@ namespace api.Controllers {
                 });  
             }
             
-            var completed = await repository.reservePacket(packetId, personEmail);
+            var completed = await repository.ReservePacket(packetId, personEmail);
 
             //check if packet is already reserved
             if (completed == "Packet already reserved") return BadRequest(new {

@@ -161,5 +161,27 @@ namespace Infrastructure {
             }
             return true;
         }
+
+        public async Task<string>? UnreservePacket(int packetId, string studentSecurityId) {
+            var list = context.packets.Where(i => i.id == packetId);
+
+            if (list.Count() == 0) {
+                return "Packet not found";
+            }
+
+            var packet = list.First();
+            if (packet.reservedBy == null) {
+                return "Packet was not reserved";
+            }
+
+            //check if package is reserved by user
+            if (packet.reservedBy.securityId != studentSecurityId) {
+                return "Packet is not reserved by user";
+            }
+
+            packet.reservedBy = null;
+            await context.SaveChangesAsync();
+            return null;
+        }
     }
 }

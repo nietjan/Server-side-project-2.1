@@ -71,7 +71,7 @@ namespace UserInterface.test {
         public void List_Shoud_Return_List_View_If_Student() {
             //Arrange
             repoMock.GetReservedPackets("test@test.com").Returns((packets).AsQueryable());
-            repoMock.userIsCanteenStaff(Arg.Any<string>()).Returns(false);
+            repoMock.UserIsCanteenStaff(Arg.Any<string>()).Returns(false);
 
             //Act
             var result = sut.List(1) as ViewResult;
@@ -84,7 +84,7 @@ namespace UserInterface.test {
         public void List_Shoud_Redirect_If_Staff() {
             //Arrange
             repoMock.GetReservedPackets("test@test.com").Returns((packets).AsQueryable());
-            repoMock.userIsCanteenStaff(Arg.Any<string>()).Returns(true);
+            repoMock.UserIsCanteenStaff(Arg.Any<string>()).Returns(true);
 
             //Act
             var result = sut.List(1) as RedirectToActionResult; ;
@@ -349,7 +349,7 @@ namespace UserInterface.test {
         public async Task Reserve_With_Wrong_Id_Should_Redirect_To_List() {
             //Arrange
             repoMock.GetSinglePacket(1).ReturnsNull();
-            repoMock.reservePacket(1, Arg.Any<string>()).ReturnsNull();
+            repoMock.ReservePacket(1, Arg.Any<string>()).ReturnsNull();
 
             //Act
             var result = await sut.reservePacket(-1) as RedirectToActionResult;
@@ -363,7 +363,7 @@ namespace UserInterface.test {
         public async Task Reserve_With_Correct_Id_Should_Redirect_To_Detail() {
             //Arrange
             repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-            repoMock.reservePacket(1, Arg.Any<string>()).ReturnsNull();
+            repoMock.ReservePacket(1, Arg.Any<string>()).ReturnsNull();
 
             //Act
             var result = await sut.reservePacket(1) as RedirectToActionResult;
@@ -377,7 +377,7 @@ namespace UserInterface.test {
         public async Task Reserve_With_Correct_Id_But_Reserve_is_Not_Succes_Should_Redirect_To_List() {
             //Arrange
             repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-            repoMock.reservePacket(1, Arg.Any<string>()).Returns("");
+            repoMock.ReservePacket(1, Arg.Any<string>()).Returns("");
 
             //Act
             var result = await sut.reservePacket(1) as RedirectToActionResult;

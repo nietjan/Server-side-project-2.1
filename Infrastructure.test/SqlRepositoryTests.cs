@@ -260,7 +260,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Reserve_Packet_With_Id_Of_Already_Reserved_Package_Should_Return_Package_Already_Reserved() {
             //Arrange
-            var packet = new Packet() { name = "", id=1, reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var packet = new Packet() { name = "", id=1, reservedBy = new Student() {securityId= "test@test.com", name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
             _context.packets.Add(packet);
             await _context.SaveChangesAsync();
 
@@ -269,6 +269,60 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.Equal("Packet already reserved", result);
+        }
+
+        //unreservePacket
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Not_Reserved_Package_Should_Return_Package_Was_Not_Reserved() {
+            //Arrange
+            var packet = new Packet() { name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.UnreservePacket(1, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Packet was not reserved", result);
+        }
+
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Not_Existing_Packet_Should_Return_Package_Not_Found() {
+            //Arrange
+
+            //Act
+            var result = await repository.UnreservePacket(1, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Packet not found", result);
+        }
+
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Package_Reserved_By_Another_User_Should_Return_Package_Is_Not_Reserved_By_User() {
+            //Arrange
+            var packet = new Packet() {reservedBy = new Student() { securityId = "test@test.com", name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.UnreservePacket(1, "DifferentString");
+
+            //Assert
+            Assert.Equal("Packet is not reserved by user", result);
+        }
+
+        [Fact]
+        public async void Unreserve_Packet_With_Id_Of_Package_That_Is_Reserved_By_User_Should_Return_Null() {
+            //Arrange
+            var packet = new Packet() { reservedBy = new Student() { securityId = "test@test.com", name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.UnreservePacket(1, "test@test.com");
+
+            //Assert
+            Assert.Null(result);
         }
 
         //GetCantines
