@@ -9,9 +9,12 @@ using Microsoft.AspNetCore.Routing;
 using System.ComponentModel.DataAnnotations;
 using System;
 using NSubstitute.ReturnsExtensions;
+using ApplicationServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserInterface.test {
-    public class PacketControllerTests {
+    public class PacketControllerTests : IDisposable {
+        private static readonly string securityId = "123";
         private readonly List<Packet> packets = new List<Packet>() {
         new Packet() {
                 id = 1,
@@ -46,17 +49,29 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Bread,
                 price = 10,
                 eighteenUp = true,
-                reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }
+                reservedBy = new Student() {securityId=securityId, name = "test@test.com", studentNumber = 123, studyCity = City.Breda }
             } 
         };
 
-        [Fact]
-        public void List_Shoud_Return_List_View() {
-            //Arrange
-            var repoMock = Substitute.For<IRepository>();
-            repoMock.GetReservedPackets("test@test.com").Returns((packets).AsQueryable());
+        private IRepository repoMock { get; set; }
+        private IUserSession userSessionMock { get; set; }
+        private PacketController sut;
 
-            var sut = new PacketController(repoMock);
+        public PacketControllerTests() {
+            repoMock = Substitute.For<IRepository>();
+            userSessionMock = Substitute.For<IUserSession>();
+            userSessionMock.GetUserIdentityId().Returns(securityId);
+            sut = new PacketController(repoMock, userSessionMock);
+        }
+        public void Dispose() {
+            sut.Dispose();
+        }
+
+        [Fact]
+        public void List_Shoud_Return_List_View_If_Student() {
+            //Arrange
+            repoMock.GetReservedPackets("test@test.com").Returns((packets).AsQueryable());
+            repoMock.userIsCanteenStaff(Arg.Any<string>()).Returns(false);
 
             //Act
             var result = sut.List(1) as ViewResult;
@@ -66,13 +81,22 @@ namespace UserInterface.test {
             Assert.NotNull(result.Model);
         }
 
+        public void List_Shoud_Redirect_If_Staff() {
+            //Arrange
+            repoMock.GetReservedPackets("test@test.com").Returns((packets).AsQueryable());
+            repoMock.userIsCanteenStaff(Arg.Any<string>()).Returns(true);
+
+            //Act
+            var result = sut.List(1) as RedirectToActionResult; ;
+
+            //Assert
+            Assert.Equal("CanteenContents", result?.ActionName);
+        }
+
         [Fact]
         public void Reserved_Should_Return_List_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
             repoMock.GetReservedPackets("test@test.com").Returns((packets).AsQueryable());
-
-            var sut = new PacketController(repoMock);
 
             //Act
             var result = sut.Reserved() as ViewResult;
@@ -82,15 +106,11 @@ namespace UserInterface.test {
             Assert.NotNull(result.Model);
         }
 
-        //CanteenContents
         [Fact]
         public void Canteen_Content_With_Id_Should_Return_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-            repoMock.GetPacketsOfCantine(1).Returns((packets).AsQueryable());
-            repoMock.GetCantines("1").Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine}.AsQueryable());
-
-            var sut = new PacketController(repoMock);
+            repoMock.GetPacketsOfCantine(Arg.Any<int>()).Returns((packets).AsQueryable());
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
 
             //Act
             var result = sut.CanteenContents(1) as ViewResult;
@@ -103,11 +123,8 @@ namespace UserInterface.test {
         [Fact]
         public void Canteen_Content_Without_Id_Should_Return_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
             repoMock.GetPacketsOfCantine(1).Returns((packets).AsQueryable());
-            repoMock.GetCantines("1").Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine }.AsQueryable());
-
-            var sut = new PacketController(repoMock);
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
 
             //Act
             var result = sut.CanteenContents(0) as ViewResult;
@@ -120,11 +137,22 @@ namespace UserInterface.test {
         [Fact]
         public void Canteen_Content_With_Invalid_Id_Should_Redirect() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-            repoMock.GetCantines("1").Returns(new List<Cantine>() { InMemoryRepository.cantine, InMemoryRepository.cantine, InMemoryRepository.cantine }.AsQueryable());
-            repoMock.GetPacketsOfCantine(-1).ReturnsNull();
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetPacketsOfCantine(Arg.Any<int>()).ReturnsNull();
 
-            var sut = new PacketController(repoMock);
+            //Act
+            var result = sut.CanteenContents(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("Index", result?.ActionName);
+            Assert.Equal("Home", result?.ControllerName);
+        }
+
+        [Fact]
+        public void Canteen_Content_With_Id_0_But_Canteen_Cannot_Be_Found_Redirect() {
+            //Arrange
+            repoMock.GetCantine(Arg.Any<string>()).ReturnsNull();
+            repoMock.GetPacketsOfCantine(Arg.Any<int>()).ReturnsNull();
 
             //Act
             var result = sut.CanteenContents(-1) as RedirectToActionResult;
@@ -137,9 +165,6 @@ namespace UserInterface.test {
         [Fact]
         public void Register_Get_Should_Return_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-
-            var sut = new PacketController(repoMock);
 
             //Act
             var result = sut.Register() as ViewResult;
@@ -151,9 +176,6 @@ namespace UserInterface.test {
         [Fact]
         public async void Register_Post_With_Valid_ModelState_Should_Return_Home() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-
-            var sut = new PacketController(repoMock);
             var packet = new DomainModel.Packet() {
                 name = "test",
                 city = City.Breda,
@@ -164,6 +186,7 @@ namespace UserInterface.test {
                 eighteenUp = true,
                 cantine = Infrastructure.InMemoryRepository.cantine,
             };
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
             repoMock.AddPacket(packet).Returns(true);
 
             //Act
@@ -177,9 +200,6 @@ namespace UserInterface.test {
         [Fact]
         public async void Register_Post_With_InValid_ModelState_Should_Return_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-
-            var sut = new PacketController(repoMock);
             var packet = new DomainModel.Packet() {
                 name = "test",
                 city = City.Breda,
@@ -191,6 +211,7 @@ namespace UserInterface.test {
                 cantine = Infrastructure.InMemoryRepository.cantine,
             };
             repoMock.AddPacket(packet).Returns(true);
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
             sut.ModelState.AddModelError("key", "error message");
 
             //Act
@@ -203,10 +224,7 @@ namespace UserInterface.test {
         [Fact]
         public void Update_Get_Should_Return_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
             repoMock.GetSinglePacket(1).Returns(new Packet(){ name = "", id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
-
-            var sut = new PacketController(repoMock);
 
             //Act
             var result = sut.Update(1) as ViewResult;
@@ -218,10 +236,7 @@ namespace UserInterface.test {
         [Fact]
         public void Update_Get_Should_Redirect_When_Packet_Does_Not_Exist() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
             repoMock.GetSinglePacket(1).ReturnsNull();
-
-            var sut = new PacketController(repoMock);
 
             //Act
             var result = sut.Update(1) as RedirectToActionResult; ;
@@ -233,10 +248,7 @@ namespace UserInterface.test {
         [Fact]
         public void Update_Get_Should_Redirect_When_Packet_Is_Reserved() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
             repoMock.GetSinglePacket(1).Returns(new Packet() { name = "", reservedBy=new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
-
-            var sut = new PacketController(repoMock);
 
             //Act
             var result = sut.Update(1) as RedirectToActionResult; ;
@@ -248,9 +260,6 @@ namespace UserInterface.test {
         [Fact]
         public async void Update_Post_With_Valid_ModelState_Should_Return_Home() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-
-            var sut = new PacketController(repoMock);
             var packet = new DomainModel.Packet() {
                 name = "test",
                 city = City.Breda,
@@ -261,6 +270,8 @@ namespace UserInterface.test {
                 eighteenUp = true,
                 cantine = Infrastructure.InMemoryRepository.cantine,
             };
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.UpdatePacket(Arg.Any<Packet>()).Returns(true);
             repoMock.UpdatePacket(packet).Returns(true);
 
             //Act
@@ -273,9 +284,6 @@ namespace UserInterface.test {
         [Fact]
         public async void Update_With_InValid_ModelState_Should_Return_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-
-            var sut = new PacketController(repoMock);
             var packet = new DomainModel.Packet() {
                 name = "test",
                 city = City.Breda,
@@ -286,6 +294,7 @@ namespace UserInterface.test {
                 eighteenUp = true,
                 cantine = Infrastructure.InMemoryRepository.cantine,
             };
+            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
             repoMock.UpdatePacket(packet).Returns(false);
             sut.ModelState.AddModelError("key", "error message");
 
@@ -300,9 +309,7 @@ namespace UserInterface.test {
         [Fact]
         public void Detail_With_Not_Correct_Id_Should_Redirect() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-
-            var sut = new PacketController(repoMock);
+            repoMock.GetSinglePacket(Arg.Any<int>()).ReturnsNull();
 
             //Act
             var result = sut.Detail(-1) as RedirectToActionResult;
@@ -315,10 +322,7 @@ namespace UserInterface.test {
         [Fact]
         public void Detail_With_Id_Of_Zero_Should_Redirect() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-            repoMock.GetSinglePacket(0).ReturnsNull();
-
-            var sut = new PacketController(repoMock);
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(packets.First());
 
             //Act
             var result = sut.Detail(0) as RedirectToActionResult;
@@ -331,10 +335,7 @@ namespace UserInterface.test {
         [Fact]
         public void Detail_With_Correct_Id_Should_Show_View() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-
-            var sut = new PacketController(repoMock);
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(packets.First());
 
             //Act
             var result = sut.Detail(1) as ViewResult;
@@ -347,10 +348,8 @@ namespace UserInterface.test {
         [Fact]
         public async Task Reserve_With_Wrong_Id_Should_Redirect_To_List() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
-            repoMock.GetSinglePacket(-1).ReturnsNull();
-
-            var sut = new PacketController(repoMock);
+            repoMock.GetSinglePacket(1).ReturnsNull();
+            repoMock.reservePacket(1, Arg.Any<string>()).ReturnsNull();
 
             //Act
             var result = await sut.reservePacket(-1) as RedirectToActionResult;
@@ -363,17 +362,28 @@ namespace UserInterface.test {
         [Fact]
         public async Task Reserve_With_Correct_Id_Should_Redirect_To_Detail() {
             //Arrange
-            var repoMock = Substitute.For<IRepository>();
             repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
             repoMock.reservePacket(1, Arg.Any<string>()).ReturnsNull();
-
-            var sut = new PacketController(repoMock);
 
             //Act
             var result = await sut.reservePacket(1) as RedirectToActionResult;
 
             //Assert
             Assert.Equal("Detail", result?.ActionName);
+            Assert.Null(result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Correct_Id_But_Reserve_is_Not_Succes_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
+            repoMock.reservePacket(1, Arg.Any<string>()).Returns("");
+
+            //Act
+            var result = await sut.reservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
             Assert.Null(result.ControllerName);
         }
     }

@@ -2,6 +2,7 @@
 using DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace UserInterface.Controllers {
     [Authorize]
@@ -19,7 +20,7 @@ namespace UserInterface.Controllers {
         public IActionResult List(int id) {
             //If user is cantine staff redidirect to CanteenContents
             
-            if (false) {
+            if (_repository.UserIsCanteenStaff(_userSession.GetUserIdentityId())) {
                 return RedirectToAction("CanteenContents");
             }
 
@@ -32,11 +33,14 @@ namespace UserInterface.Controllers {
             return View("List", list);
         }
 
-        [Authorize(Policy = "Claim.test")]
+        [Authorize(Policy = "canteenStaff")]
         public IActionResult CanteenContents(int id) {
             if (id == 0) {
                 //TODO: get Id from User;
-                id = 1;
+
+                var result = _repository.GetCantine(_userSession.GetUserIdentityId());
+                if(result == null) return RedirectToAction("Index", "Home");
+                id = result.id;
             }
 
             var content = _repository.GetPacketsOfCantine(id);
@@ -104,14 +108,14 @@ namespace UserInterface.Controllers {
 
             if (ModelState.IsValid) {
                 //set cantine connected to user
-                packet.cantine = Infrastructure.InMemoryRepository.cantine;
+                packet.cantine = _repository.GetCantine(_userSession.GetUserIdentityId());
 
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
 
                 var completed = await _repository.UpdatePacket(packet);
                 if (!completed) {
-                    ModelState.AddModelError("CustomError", "Something went wrong, please try again");
+                    ModelState.AddModelError("CustomError", "Packet ");
                     return View();
                 }
                 return RedirectToAction("Detail", new { id = packet.id });
@@ -143,10 +147,10 @@ namespace UserInterface.Controllers {
                 return RedirectToAction("List", new { id = 0 });
             }
             
-            //if reserve packet is succes go back to detail page, otherwise go to list page 
-            //TODO: change email to email of user
-            var answer = await _repository.reservePacket(id, "test@test.com");
-            return RedirectToAction("Detail", new { id = id });
+            //if reserve packet is success go back to detail page, otherwise go to list page 
+            var answer = await _repository.ReservePacket(id, _userSession.GetUserIdentityId());
+            if(answer == null) return RedirectToAction("Detail", new { id = id });
+            else return RedirectToAction("list", new { id = id });
         }
     }
 }

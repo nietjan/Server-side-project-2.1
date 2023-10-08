@@ -203,7 +203,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var result = await repository.reservePacket(id,"test@test.nl");
+            var result = await repository.ReservePacket(id,"test@test.nl");
 
             //Assert
             Assert.Null(result);
@@ -218,7 +218,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var result = await repository.reservePacket(id, "test@test.nl");
+            var result = await repository.ReservePacket(id, "test@test.nl");
 
             //Assert
             Assert.Equal("Packet not found", result);
@@ -232,7 +232,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var result = await repository.reservePacket(id, "test@test.nl");
+            var result = await repository.ReservePacket(id, "test@test.nl");
 
             //Assert
             Assert.Equal("Packet not found", result);
@@ -244,7 +244,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var result = await repository.reservePacket(3, "test@test.nl");
+            var result = await repository.ReservePacket(3, "test@test.nl");
 
             //Assert
             Assert.Equal("Packet already reserved", result);
@@ -270,7 +270,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(null, "test@test.com");
+            var hasReserved = repository.HasReservedForSpecificDay(null, "test@test.com");
 
             //Assert
             Assert.False(hasReserved);
@@ -282,7 +282,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now, "test@test.com");
+            var hasReserved = repository.HasReservedForSpecificDay(DateTime.Now, "test@test.com");
 
             //Assert
             Assert.True(hasReserved);
@@ -294,7 +294,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now.AddDays(1), "test@test.com");
+            var hasReserved = repository.HasReservedForSpecificDay(DateTime.Now.AddDays(1), "test@test.com");
 
             //Assert
             Assert.False(hasReserved);

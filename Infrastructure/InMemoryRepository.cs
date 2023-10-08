@@ -145,7 +145,7 @@ namespace Infrastructure {
             }
         }
 
-        public async Task<string>? reservePacket(int packetId, string studentSecurityId) {
+        public async Task<string>? ReservePacket(int packetId, string studentSecurityId) {
             var list = packets.Where(i => i.id == packetId);
 
             if (list.Count() == 0) {
@@ -185,7 +185,7 @@ namespace Infrastructure {
             return new List<Cantine>() { cantine, cantine, cantine};
         }
 
-        public bool hasReservedForSpecificDay(DateTime? packetDate,  string studentSecurityId) {
+        public bool HasReservedForSpecificDay(DateTime? packetDate,  string studentSecurityId) {
             if(packetDate == null) {
                 return false;
             }
@@ -225,6 +225,10 @@ namespace Infrastructure {
 
         public Cantine? GetCantine(string staffSecurityId) {
             return cantine;
+        }
+
+        public bool UserIsCanteenStaff(string securityId) {
+            return false;
         }
     }
 }

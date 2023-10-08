@@ -19,23 +19,6 @@ namespace Infrastructure.test {
             _context.Dispose();
         }
 
-        private async void ClearDb() {
-            _context.packets.RemoveRange(_context.packets);
-            _context.canteen.RemoveRange(_context.canteen);
-            _context.canteenStaffMembers.RemoveRange(_context.canteenStaffMembers);
-            _context.products.RemoveRange(_context.products);
-            _context.exampleProductLists.RemoveRange(_context.exampleProductLists);
-            
-            await _context.SaveChangesAsync();
-        }
-
-        //    //Act
-        //    var exception = Record.ExceptionAsync(() => repo.AddPacket(packet));
-
-        //    //Assert
-        //    Assert.NotNull(exception);
-        //        Assert.Equal(packet, _context.packets.Last());
-
         //Add Packet
         [Fact]
         public async void Packet_Without_Id_Should_Be_Added() {
@@ -220,7 +203,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var result = await repository.reservePacket(packet.id, student.securityId);
+            var result = await repository.ReservePacket(packet.id, student.securityId);
 
             //Assert
             Assert.Null(result);
@@ -235,7 +218,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var result = await repository.reservePacket(packet.id, "23434");
+            var result = await repository.ReservePacket(packet.id, "23434");
 
             //Assert
             Assert.Equal("Student cannot be found", result);
@@ -252,7 +235,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var result = await repository.reservePacket(id, "test@test.nl");
+            var result = await repository.ReservePacket(id, "test@test.nl");
 
             //Assert
             Assert.Equal("Packet not found", result);
@@ -268,7 +251,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var result = await repository.reservePacket(id, "test@test.nl");
+            var result = await repository.ReservePacket(id, "test@test.nl");
 
             //Assert
             Assert.Equal("Packet not found", result);
@@ -282,7 +265,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var result = await repository.reservePacket(1, "test@test.nl");
+            var result = await repository.ReservePacket(1, "test@test.nl");
 
             //Assert
             Assert.Equal("Packet already reserved", result);
@@ -342,7 +325,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(null, "test@test.com");
+            var hasReserved = repository.HasReservedForSpecificDay(null, "test@test.com");
 
             //Assert
             Assert.False(hasReserved);
@@ -356,7 +339,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now, "34675345345");
+            var hasReserved = repository.HasReservedForSpecificDay(DateTime.Now, "34675345345");
 
             //Assert
             Assert.True(hasReserved);
@@ -370,7 +353,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();
 
             //Act
-            var hasReserved = repository.hasReservedForSpecificDay(DateTime.Now.AddDays(1), "test@test.com");
+            var hasReserved = repository.HasReservedForSpecificDay(DateTime.Now.AddDays(1), "test@test.com");
 
             //Assert
             Assert.False(hasReserved);
@@ -447,6 +430,84 @@ namespace Infrastructure.test {
             //Assert
             Assert.True(result);
             Assert.Equal(packet.name, _context.packets.First().name);
+        }
+
+        //GetCanteen
+        [Fact]
+        public async void Get_Canteen_With_Valid_Id_Should_Return_Canteen() {
+            //Arrange
+            string securityId = "123";
+            var canteen = new Cantine() { location = "" };
+            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123, cantine = canteen };
+            _context.canteenStaffMembers.Add(staffMember);
+            _context.canteen.Add(canteen);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = repository.GetCantine(securityId);
+
+            //Assert
+            Assert.Equal(canteen, result);
+        }
+
+        [Fact]
+        public async void Get_Canteen_With_Invalid_Id_Should_Return_Null() {
+            //Arrange
+            string securityId = "123";
+            var canteen = new Cantine() { location = "" };
+            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123, cantine = canteen };
+            _context.canteenStaffMembers.Add(staffMember);
+            _context.canteen.Add(canteen);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = repository.GetCantine("");
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async void Get_Canteen_With_Canteen_Equals_Null_Should_Return_Null() {
+            //Arrange
+            string securityId = "123";
+            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123 };
+            _context.canteenStaffMembers.Add(staffMember);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = repository.GetCantine("");
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        //userIsCanteenStaff
+        [Fact]
+        public async void User_Is_Canteen_Staff_With_Valid_Id_Should_Return_True() {
+            //Arrange
+            string securityId = "123";
+            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123 };
+            _context.canteenStaffMembers.Add(staffMember);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = repository.UserIsCanteenStaff(securityId);
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async void User_Is_Canteen_Staff_With_Invalid_Id_Should_Return_False() {
+            //Arrange
+            string securityId = "123";
+
+            //Act
+            var result = repository.UserIsCanteenStaff(securityId);
+
+            //Assert
+            Assert.False(result);
         }
     }
 }

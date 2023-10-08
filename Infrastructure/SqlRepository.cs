@@ -84,7 +84,7 @@ namespace Infrastructure {
             }
         }
 
-        public bool hasReservedForSpecificDay(DateTime? packetDate, string studentSecurityId) {
+        public bool HasReservedForSpecificDay(DateTime? packetDate, string studentSecurityId) {
             if (packetDate == null) {
                 return false;
             }
@@ -100,7 +100,7 @@ namespace Infrastructure {
             return false;
         }
 
-        public async Task<string>? reservePacket(int packetId, string studentSecurityId) {
+        public async Task<string>? ReservePacket(int packetId, string studentSecurityId) {
             //check if package exists
             var list = context.packets.Where(i => i.id == packetId);
             if (list.Count() == 0) {
@@ -146,12 +146,20 @@ namespace Infrastructure {
         }
 
         public Cantine? GetCantine(string staffSecurityId) {
-            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId);
+            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId && i.cantine != null);
             //If user does not have canteen, return all canteens;
             if (userCanteenList.Count() != 1) {
                 return null;
             }
             return userCanteenList.First().cantine;
+        }
+
+        public bool UserIsCanteenStaff(string securityId) {
+            var userList = context.canteenStaffMembers.Where(i => i.securityId == securityId);
+            if(userList.Count() != 1) {
+                return false;
+            }
+            return true;
         }
     }
 }

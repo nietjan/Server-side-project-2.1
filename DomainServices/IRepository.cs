@@ -22,7 +22,8 @@ namespace DomainServices {
         public Task<bool> AddPacket(Packet packet);
         public Task<bool> UpdatePacket(Packet packet);
         public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal);
-        public Task<string>? reservePacket(int packetId, string studentSecurityId);
-        public bool hasReservedForSpecificDay(DateTime? date, string studentSecurityId);
+        public Task<string>? ReservePacket(int packetId, string studentSecurityId);
+        public bool HasReservedForSpecificDay(DateTime? date, string studentSecurityId);
+        public bool UserIsCanteenStaff(string securityId);
     }
 }
