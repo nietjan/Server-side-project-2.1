@@ -356,6 +356,7 @@ namespace UserInterface.test {
 
             //Assert
             Assert.Equal("List", result?.ActionName);
+            Assert.Equal(-1, result?.RouteValues?["id"]);
             Assert.Null(result?.ControllerName);
         }
 
@@ -374,7 +375,7 @@ namespace UserInterface.test {
         }
 
         [Fact]
-        public async Task Reserve_With_Correct_Id_But_Reserve_is_Not_Succes_Should_Redirect_To_List() {
+        public async Task Reserve_With_Correct_Id_But_Reserve_is_Not_Success_Should_Redirect_To_List() {
             //Arrange
             repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
             repoMock.ReservePacket(1, Arg.Any<string>()).Returns("");
@@ -384,6 +385,51 @@ namespace UserInterface.test {
 
             //Assert
             Assert.Equal("list", result?.ActionName);
+            Assert.Equal(-1, result?.RouteValues?["id"]);
+            Assert.Null(result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Unreserve_With_Wrong_Id_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(1).ReturnsNull();
+            repoMock.UnreservePacket(1, Arg.Any<string>()).ReturnsNull();
+
+            //Act
+            var result = await sut.unreservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("List", result?.ActionName);
+            Assert.Equal(-2, result?.RouteValues?["id"]);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Unreserve_With_Correct_Id_Should_Redirect_To_Detail() {
+            //Arrange
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
+            repoMock.UnreservePacket(1, Arg.Any<string>()).ReturnsNull();
+
+            //Act
+            var result = await sut.unreservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("Detail", result?.ActionName);
+            Assert.Null(result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Unreserve_With_Correct_Id_But_Reserve_is_Not_Success_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
+            repoMock.UnreservePacket(1, Arg.Any<string>()).Returns("");
+
+            //Act
+            var result = await sut.unreservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal(-2, result?.RouteValues?["id"]);
             Assert.Null(result.ControllerName);
         }
     }

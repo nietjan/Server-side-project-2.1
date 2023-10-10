@@ -26,5 +26,6 @@ namespace DomainServices {
         public Task<string>? UnreservePacket(int packetId, string studentSecurityId);
         public bool HasReservedForSpecificDay(DateTime? date, string studentSecurityId);
         public bool UserIsCanteenStaff(string securityId);
+        public Student? GetStudent(string securityId);
     }
 }

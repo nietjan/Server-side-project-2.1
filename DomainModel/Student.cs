@@ -1,10 +1,7 @@
 ﻿using DomainModel.enums;
-using System;
-using System.Collections.Generic;
+using DomainModel.overload;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DomainModel {
     public class Student {
@@ -14,6 +11,9 @@ namespace DomainModel {
         public string securityId { get; set; } = string.Empty;
 
         public required string name { get; set; }
+
+        [MinimumAgeRequirement]
+        public DateTime birthday { get; set; }
 
         public required int studentNumber { get; set; }
 

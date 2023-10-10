@@ -116,3 +116,10 @@ select {
     margin-bottom: auto;
 }
 
+.error-border {
+    border: 5px solid #BF0436;
+    padding: 5px;
+    background-color: #BF0436;
+    color: white;
+    border-radius: 10px;
+}

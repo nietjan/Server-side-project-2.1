@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DomainModel.overload;
 using DomainModel.enums;
 
 namespace DomainModel
@@ -41,8 +39,45 @@ namespace DomainModel
 
         public Cantine? cantine { get; set; }
 
-        //exemple products based on old products
+        //example products based on old products
         public ExampleProductList? exampleProductList { get; set; }
 
+        public void SetEighteenUpValue() {
+            //check if exampleProductlist exists
+            if(exampleProductList == null) {
+                eighteenUp = false;
+                return;
+            }
+
+            //loop over product list and check if a product is 18+
+            foreach(var product in exampleProductList.list) {
+                if (product == null) continue;
+
+                if (product.alcoholic) {
+                    eighteenUp = true;
+                    return;
+                }
+            }
+
+            //no products are 18+
+            eighteenUp = false;
+        }
+
+        public bool StudentIsAllowedToReservePacketByAge(Student? student) {
+            if(student == null) return false;
+
+            // if 18 always allowed
+            if (student.birthday.getAge() >= 18) {
+                return true;
+            }
+
+            // if packet is 18+ than not allowed, because student is no 18+
+            if (eighteenUp == true) {
+                return false;
+            }
+
+            // student is not 18 and packet is not 18+ so allowed
+            return true;
+        }
     }
 }

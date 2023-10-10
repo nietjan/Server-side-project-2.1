@@ -124,13 +124,18 @@ namespace Infrastructure {
             }
 
             //check if student exists
-            var studentList = context.students.Where(i => i.securityId == studentSecurityId);
-            if(studentList.Count() != 1) { 
+            var student = GetStudent(studentSecurityId);
+            if(student == null) { 
                 return "Student cannot be found";
             }
 
+            //check if student is old enough
+            if (packet.StudentIsAllowedToReservePacketByAge(student) == false) {
+                return "Student not old enough to reserve packet";
+            }
+
             //reserve packet
-            packet.reservedBy = studentList.First();
+            packet.reservedBy = student;
             await context.SaveChangesAsync();
             return null;
         }
@@ -182,6 +187,13 @@ namespace Infrastructure {
             packet.reservedBy = null;
             await context.SaveChangesAsync();
             return null;
+        }
+
+        public Student? GetStudent(string securityId) {
+            var list = context.students.Where(i => i.securityId == securityId);
+
+            if (list.Count() != 1) return null;
+            return list.Single();
         }
     }
 }

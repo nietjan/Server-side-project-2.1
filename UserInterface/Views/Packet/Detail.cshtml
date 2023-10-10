@@ -27,15 +27,23 @@
             @if (Model.reservedBy != null) {
                 <p class="red-bold-Text">Reserved</p>
             }
+
+            @if (Model.StudentIsAllowedToReservePacketByAge(repository.GetStudent(userSession.GetUserIdentityId())) == false){
+                <p class="red-bold-Text">Not old enough</p>
+            }
             
             @* check if user has already reserved a package or user is not a student*@
-            @if (repository.HasReservedForSpecificDay(Model?.startPickup, userSession.GetUserIdentityId()) || repository.UserIsCanteenStaff(userSession.GetUserIdentityId()) || Model.reservedBy != null) {
+            @if (repository.HasReservedForSpecificDay(Model?.startPickup, userSession.GetUserIdentityId()) || 
+            repository.UserIsCanteenStaff(userSession.GetUserIdentityId()) || 
+            Model.reservedBy != null || 
+            Model.StudentIsAllowedToReservePacketByAge(repository.GetStudent(userSession.GetUserIdentityId())) == false) {
+
                 @* checks if packet is reserved and if so if it is reserved by the user*@
                 @if (Model.reservedBy != null) {
                     @if (Model?.reservedBy?.securityId == userSession.GetUserIdentityId()) {
                         @* package is reserved by user *@
                         <div class="button-middle-small-screen">
-                            <button onclick="location.href='@Url.Action("unreservePacket", "Packet", new {id = Model?.id})'">Reserve</button>
+                            <button onclick="location.href='@Url.Action("unreservePacket", "Packet", new {id = Model?.id})'">Unreserve</button>
                         </div>
                     } else {
                         @* package is reserved by an other user *@

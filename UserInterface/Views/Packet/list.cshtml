@@ -3,6 +3,12 @@
 
 }
 <div class="p-2">
+    @if ((string?)ViewContext.RouteData.Values["id"] == "-1") {
+        <p class="text-center error-border">Packet is already reserved</p>
+    } 
+    @if ((string?)ViewContext.RouteData.Values["id"] == "-2") {
+        <p class="text-center error-border">Packet cannot be unreserved. Either user has not reserved the package or the package has been reserved by another user</p>
+    }
 
     @* check if page is for registerd packeges or non regsiterd packages *@
     @if ((string?)ViewContext.RouteData.Values["action"] == "Reserved" && (string?)ViewContext.RouteData.Values["controller"] == "Packet") {

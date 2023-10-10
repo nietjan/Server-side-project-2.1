@@ -205,7 +205,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var result = await repository.ReservePacket(id,"test@test.nl");
+            var result = await repository.ReservePacket(id, "99aed502-3fab-4077-acca-d74391cecd3f");
 
             //Assert
             Assert.Null(result);
@@ -250,6 +250,18 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.Equal("Packet already reserved", result);
+        }
+
+        [Fact]
+        public async void Reserve_Packet_With_Student_Not_Old_Enough_Should_Return_Student_Not_Old_Enough_To_Reserve_Packet() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.ReservePacket(1, "test@test.nl");
+
+            //Assert
+            Assert.Equal("Student not old enough to reserve packet", result);
         }
 
         //UnreservePacket
@@ -406,6 +418,32 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.True(result);
+        }
+
+        //GetStudent
+        [Fact]
+        public void Get_Student_With_Valid_Id_Should_Return_Student() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = repository.GetStudent("99aed502-3fab-4077-acca-d74391cecd3f");
+
+            //Assert
+            Assert.Equal("99aed502-3fab-4077-acca-d74391cecd3f", result.securityId);
+        }
+
+        [Fact]
+        public void Get_Student_With_Nonvalid_Id_Should_Return_Other_Student() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+            Student student = new Student() { securityId = "test", name = "Student1", birthday = new DateTime(2006, 1, 1), studentNumber = 123, studyCity = DomainModel.enums.City.Breda };
+
+            //Act
+            var result = repository.GetStudent("test");
+
+            //Assert
+            Assert.Equal(student.id, result?.id);
         }
     }
 }

@@ -68,11 +68,14 @@ namespace UserInterface.Controllers {
             }
 
             if (ModelState.IsValid) {
-                //set cantine connected to user
+                //set canteen connected to user
                 packet.cantine = _repository.GetCantine(_userSession.GetUserIdentityId());
 
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
+
+                //set 18+ attribute
+                packet.SetEighteenUpValue();
 
                 var completed = await _repository.AddPacket(packet);
                 if (!completed) {
@@ -114,6 +117,9 @@ namespace UserInterface.Controllers {
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
 
+                //set 18+ attribute
+                packet.SetEighteenUpValue();
+
                 var completed = await _repository.UpdatePacket(packet);
                 if (!completed) {
                     ModelState.AddModelError("CustomError", "Packet ");
@@ -147,13 +153,13 @@ namespace UserInterface.Controllers {
 
             //if packet == null, than packet does not exist
             if (packet == null) {
-                return RedirectToAction("List", new { id = 0 });
+                return RedirectToAction("List", new { id = -1 });
             }
             
             //if reserve/unreserve packet is success go back to detail page, otherwise go to list page 
             var answer = await _repository.ReservePacket(id, _userSession.GetUserIdentityId());
             if(answer == null) return RedirectToAction("Detail", new { id = id });
-            else return RedirectToAction("list", new { id = id });
+            else return RedirectToAction("list", new { id = -1 });
         }
 
         [Authorize(Policy = "Student")]
@@ -162,13 +168,13 @@ namespace UserInterface.Controllers {
 
             //if packet == null, than packet does not exist
             if (packet == null) {
-                return RedirectToAction("List", new { id = 0 });
+                return RedirectToAction("List", new { id = -2 });
             }
 
             //if reserve/unreserve packet is success go back to detail page, otherwise go to list page 
             var answer = await _repository.UnreservePacket(id, _userSession.GetUserIdentityId());
             if (answer == null) return RedirectToAction("Detail", new { id = id });
-            else return RedirectToAction("list", new { id = id });
+            else return RedirectToAction("list", new { id = -2 });
         }
     }
 }

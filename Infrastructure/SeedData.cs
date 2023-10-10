@@ -73,8 +73,8 @@ namespace Infrastructure
             };
 
             Student[] students = {
-                new Student(){securityId=studentId[0], name="Student1", studentNumber=123, studyCity=DomainModel.enums.City.Breda},
-                new Student(){securityId=studentId[1], name="Student2", studentNumber=234, studyCity=DomainModel.enums.City.Breda},
+                new Student(){securityId=studentId[0], name="Student1", birthday = new DateTime(2006, 1, 1), studentNumber=123, studyCity=DomainModel.enums.City.Breda},
+                new Student(){securityId=studentId[1], name="Student2", birthday =new DateTime(2004, 1, 1), studentNumber=234, studyCity=DomainModel.enums.City.Breda},
             };
 
             _dbContext.canteen.AddRange(canteens);

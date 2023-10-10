@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations.DbContextMigrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,6 +47,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     securityId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     studentNumber = table.Column<int>(type: "int", nullable: false),
                     studyCity = table.Column<int>(type: "int", nullable: false)
                 },

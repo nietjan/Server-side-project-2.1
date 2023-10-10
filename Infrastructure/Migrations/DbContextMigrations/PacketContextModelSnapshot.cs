@@ -179,6 +179,9 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<DateTime>("birthday")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

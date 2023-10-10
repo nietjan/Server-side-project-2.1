@@ -21,11 +21,11 @@ namespace Infrastructure {
                     new Product() {
                         id = 1,
                         name = "Bread1",
-                        alcoholic = true,
+                        alcoholic = false,
                     }, new Product() {
                         id = 2,
                         name = "Bread2",
-                        alcoholic = true,
+                        alcoholic = false,
                     }, new Product() {
                         id = 3,
                         name = "Bread3",
@@ -167,6 +167,9 @@ namespace Infrastructure {
                 return "Already reserved a package";
             }
 
+            if(packet.StudentIsAllowedToReservePacketByAge(GetStudent(studentSecurityId)) == false) {
+                return "Student not old enough to reserve packet";
+            }
 
             packet.reservedBy = new Student() { securityId=studentSecurityId, name="", studentNumber=123, studyCity=City.Breda};
             return null;
@@ -250,6 +253,12 @@ namespace Infrastructure {
 
             packet.reservedBy = null;
             return null;
+        }
+
+        public Student? GetStudent(string securityId) {
+            if (securityId == "99aed502-3fab-4077-acca-d74391cecd3f") return new Student() { securityId = securityId, name = "Student2", birthday = new DateTime(2004, 1, 1), studentNumber = 234, studyCity = DomainModel.enums.City.Breda };
+            return new Student() { securityId = securityId, name = "Student1", birthday = new DateTime(2006, 1, 1), studentNumber = 123, studyCity = DomainModel.enums.City.Breda };
+            
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations.DbContextMigrations
 {
     [DbContext(typeof(PacketContext))]
-    [Migration("20231006162307_initial")]
-    partial class initial
+    [Migration("20231010082200_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,6 +181,9 @@ namespace Infrastructure.Migrations.DbContextMigrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("birthday")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("name")
                         .IsRequired()

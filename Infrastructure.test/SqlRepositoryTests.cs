@@ -196,7 +196,7 @@ namespace Infrastructure.test {
         public async void Reserve_Packet_With_Correct_Info_Should_Return_Null() {
             //Arrange
             var packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
-            var student = new Student() { securityId = "234324234", name = "", studentNumber = 123, studyCity = City.Breda };
+            var student = new Student() { securityId = "234324234", birthday=new DateTime(2005, 1, 1), name = "", studentNumber = 123, studyCity = City.Breda };
             _context.packets.Add(packet);
             _context.students.Add(student);
             
@@ -270,6 +270,24 @@ namespace Infrastructure.test {
             //Assert
             Assert.Equal("Packet already reserved", result);
         }
+
+
+        [Fact]
+        public async void Reserve_Packet_With_Student_Not_Old_Enough_Should_Return_Student_Not_Old_Enough_To_Reserve_Packet() {
+            //Arrange
+            var packet = new Packet() { name = "", id = 1, eighteenUp=true, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            var student = new Student() { securityId = "234324234", birthday = DateTime.Now.AddYears(-16), name = "", studentNumber = 123, studyCity = City.Breda };
+            _context.packets.Add(packet);
+            _context.students.Add(student);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.ReservePacket(1, student.securityId);
+
+            //Assert
+            Assert.Equal("Student not old enough to reserve packet", result);
+        }
+
 
         //unreservePacket
         [Fact]
@@ -562,6 +580,35 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.False(result);
+        }
+
+        //GetStudent
+        [Fact]
+        public async void Get_Student_With_Valid_Id_Should_Return_Student() {
+            //Arrange
+            var student = new Student() { securityId = "234324234", birthday = DateTime.Now.AddYears(-16), name = "", studentNumber = 123, studyCity = City.Breda };
+            _context.students.Add(student);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = repository.GetStudent(student.securityId);
+
+            //Assert
+            Assert.Equal(student, result);
+        }
+
+        [Fact]
+        public async void Get_Student_With_Nonvalid_Id_Should_Return_Null() {
+            //Arrange
+            var student = new Student() { securityId = "234324234", birthday = DateTime.Now.AddYears(-16), name = "", studentNumber = 123, studyCity = City.Breda };
+            _context.students.Add(student);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = repository.GetStudent("test");
+
+            //Assert
+            Assert.Null(result);
         }
     }
 }
