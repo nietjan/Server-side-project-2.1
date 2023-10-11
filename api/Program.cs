@@ -3,7 +3,11 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using HotChocolate;
 using api.Data;
-using NuGet.Protocol;
+using Microsoft.AspNetCore.Identity;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,22 +20,60 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //db context
-
 builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("Default"),
     sqlServerOptionsAction: sqlOptions => {
         sqlOptions.EnableRetryOnFailure();
     }
+), ServiceLifetime.Transient);
+builder.Services.AddScoped<IRepository, SqlRepository>();
+
+//identity
+builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("Security"),
+    sqlServerOptionsAction: sqlOptions => {
+        sqlOptions.EnableRetryOnFailure();
+    }
 ));
 
-builder.Services.AddScoped<IRepository, SqlRepository>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(config => {
+    config.Password.RequireDigit = false;
+    config.Password.RequiredLength = 6;
+    config.Password.RequireLowercase = true;
+    config.Password.RequireUppercase = true;
+    config.Password.RequireNonAlphanumeric = false;
+})
+    .AddEntityFrameworkStores<SecurityContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services
     .AddGraphQLServer()
+    .AddAuthorization()
     .AddQueryType<Query>()
     .AddProjections()
     .AddFiltering()
-    .AddSorting(); ;
+    .AddSorting();
+
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters {
+        RequireExpirationTime = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = false,
+        ValidateLifetime = false,
+        IssuerSigningKey =
+        new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value!)),
+    };
+});
+
+
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -43,10 +85,11 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.MapGraphQL();
-
-app.UseAuthorization();
 
 app.Run();

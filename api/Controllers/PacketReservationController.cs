@@ -1,11 +1,17 @@
 ﻿using DomainModel;
 using DomainModel.Api;
 using DomainServices;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Security.Claims;
 using System.Text.Json.Nodes;
 
 namespace api.Controllers {
     [Route("api/Packet/{id}/Reservation")]
+    [Authorize]
     [ApiController]
     public class PacketReservationController : ControllerBase {
         private readonly IRepository repository;
@@ -15,16 +21,25 @@ namespace api.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReservationScheme))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ReservationScheme))]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ReservationScheme))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ReservationScheme))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TwoXScheme))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(FourXScheme))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(FourXScheme))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(FourXScheme))]
         [Produces("application/json")]
-        public async Task<ActionResult> Post(int id, string? identityId) {
-            if(identityId == null || id == 0) {
+        public async Task<ActionResult> Post(int id) {
+            //get authorization token
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var identityId = readJwtToken(token);
+
+            if (identityId == null) return Unauthorized(new {
+                StatusCode = 401,
+                message = "Unauthorized"
+            });
+
+            if (id == 0) {
                 return BadRequest(new {
                     StatusCode = 400,
-                    message = "PacketId or identityId are not defined"
+                    message = "PacketId is not defined"
                 });
             }
             
@@ -64,6 +79,22 @@ namespace api.Controllers {
                 Message = "Packet reserved"
             });
             
+        }
+
+        private string? readJwtToken(string? jwtTokenStream) {
+            if (jwtTokenStream == null) return null;
+
+            //get token
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(jwtTokenStream);
+            var token = jsonToken as JwtSecurityToken;
+
+            var claimList = token.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier);
+
+            if (claimList.Count() != 1) return null;
+
+            var id = claimList.First().Value;
+            return id;
         }
     }
 }
