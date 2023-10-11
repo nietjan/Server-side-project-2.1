@@ -610,5 +610,76 @@ namespace Infrastructure.test {
             //Assert
             Assert.Null(result);
         }
+
+        //GetAllPackets
+        [Fact]
+        public void Get_All_Packets_With_No_Packets_Should_Return_Empty_List() {
+            //Arrange
+
+            //Act
+            var result = repository.GetAllPackets();
+
+            //Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async void Get_All_Packets_With_Packets_Should_Return_List_With_Packets() {
+            //Arrange
+            Packet[] packets = {
+                new Packet(){name = "packet1", city=City.Breda, price=5, typeOfMeal = TypeOfMeal.Bread, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet2", city=City.Breda, price=15, typeOfMeal = TypeOfMeal.Diner, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)}
+            };
+            _context.packets.AddRange(packets);
+            await _context.SaveChangesAsync();
+
+
+            //Act
+            var result = repository.GetAllPackets();
+
+            //Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(packets[0], result.First());
+        }
+
+        //GetAllProducts
+        [Fact]
+        public void Get_All_Products_With_No_Products_Should_Return_Empty_List() {
+            //Arrange
+
+            //Act
+            var result = repository.GetAllProducts();
+
+            //Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async void Get_All_Products_With_Products_Should_Return_List_With_Packets() {
+            //Arrange
+            Product[] productsList = {
+                    new Product() {alcoholic=true, name="bread1" },
+                    new Product() {alcoholic=true, name="bread2" },
+                    new Product() {alcoholic=false, name="bread3"},
+
+                    new Product() {alcoholic=true, name="diner1"},
+                    new Product() {alcoholic=false, name="diner2"},
+                    new Product() {alcoholic=false, name="diner3"},
+
+                    new Product() {alcoholic=false, name="drink1"},
+                    new Product() {alcoholic=false, name="drink2"},
+                    new Product() {alcoholic=false, name="drink3"},
+            };
+            _context.products.AddRange(productsList);
+            await _context.SaveChangesAsync();
+
+
+            //Act
+            var result = repository.GetAllProducts();
+
+            //Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(productsList[0], result.First());
+        }
     }
 }

@@ -1,6 +1,10 @@
 using DomainServices;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using HotChocolate;
+using api.Data;
+using NuGet.Protocol;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +15,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IRepository, InMemoryRepository>();
-
 //db context
+
 builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("Default")
+    builder.Configuration.GetConnectionString("Default"),
+    sqlServerOptionsAction: sqlOptions => {
+        sqlOptions.EnableRetryOnFailure();
+    }
 ));
+
+builder.Services.AddScoped<IRepository, SqlRepository>();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddProjections()
+    .AddFiltering()
+    .AddSorting(); ;
 
 var app = builder.Build();
 
@@ -29,6 +44,8 @@ if (app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.MapGraphQL();
 
 app.UseAuthorization();
 

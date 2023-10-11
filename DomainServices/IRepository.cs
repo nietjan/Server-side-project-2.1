@@ -8,6 +8,7 @@ using DomainModel.enums;
 
 namespace DomainServices {
     public interface IRepository {
+        //get all non reserved packets
         public IEnumerable<Packet> GetPackets();
 
         //Return packets whith correct id, with non existing id returns null, contents should be orderd on date
@@ -27,5 +28,9 @@ namespace DomainServices {
         public bool HasReservedForSpecificDay(DateTime? date, string studentSecurityId);
         public bool UserIsCanteenStaff(string securityId);
         public Student? GetStudent(string securityId);
+
+        //GraphQl
+        public IEnumerable<Packet> GetAllPackets();
+        public IEnumerable<Product> GetAllProducts();
     }
 }

@@ -260,5 +260,19 @@ namespace Infrastructure {
             return new Student() { securityId = securityId, name = "Student1", birthday = new DateTime(2006, 1, 1), studentNumber = 123, studyCity = DomainModel.enums.City.Breda };
             
         }
+
+        public IEnumerable<Packet> GetAllPackets() {
+            return packets;
+        }
+
+        public IEnumerable<Product> GetAllProducts() {
+            List<Product> list = new();
+
+            foreach(var productsList in productsExampleList) {
+                list.AddRange(productsList.list);
+            }
+
+            return list;
+        }
     }
 }

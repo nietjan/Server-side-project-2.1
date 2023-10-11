@@ -445,5 +445,33 @@ namespace Infrastructure.test {
             //Assert
             Assert.Equal(student.id, result?.id);
         }
+
+        //GetAllPackets
+        [Fact]
+        public async void Get_All_Packets_With_Packets_Should_Return_List_With_Packets() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = repository.GetAllPackets();
+
+            //Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(repository.packets[0], result.First());
+        }
+
+        //GetAllProducts
+        [Fact]
+        public async void Get_All_Products_With_Products_Should_Return_List_With_Packets() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = repository.GetAllProducts();
+
+            //Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(InMemoryRepository.productsExampleList[0].list.First(), result.First());
+        }
     }
 }

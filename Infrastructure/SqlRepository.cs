@@ -195,5 +195,14 @@ namespace Infrastructure {
             if (list.Count() != 1) return null;
             return list.Single();
         }
+
+        //GraphQl
+        public IEnumerable<Packet> GetAllPackets() {
+            return context.packets;
+        }
+
+        public IEnumerable<Product> GetAllProducts() {
+            return context.products;
+        }
     }
 }

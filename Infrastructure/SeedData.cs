@@ -64,7 +64,7 @@ namespace Infrastructure
                     new Product() {alcoholic=false, name="drink1"},
                     new Product() {alcoholic=false, name="drink2"},
                     new Product() {alcoholic=false, name="drink3"},
-                };
+            };
 
             ExampleProductList[] exampleList = {
                     new ExampleProductList() {list = new List<Product>(){ productsList[0], productsList[1], productsList[2]}, type = DomainModel.enums.TypeOfMeal.Bread},
@@ -77,11 +77,21 @@ namespace Infrastructure
                 new Student(){securityId=studentId[1], name="Student2", birthday =new DateTime(2004, 1, 1), studentNumber=234, studyCity=DomainModel.enums.City.Breda},
             };
 
+            Packet[] packets = {
+                new Packet(){name = "packet1", cantine=canteens[0], city = canteens[0].city, exampleProductList = exampleList[0], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet2", reservedBy = students[0], cantine=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=15, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)}
+            };
+
+            packets[0].SetEighteenUpValue();
+            packets[1].SetEighteenUpValue();
+
+
             _dbContext.canteen.AddRange(canteens);
             _dbContext.canteenStaffMembers.AddRange(staff);
             _dbContext.products.AddRange(productsList);
             _dbContext.exampleProductLists.AddRange(exampleList);
             _dbContext.students.AddRange(students);
+            _dbContext.packets.AddRange(packets);
             await _dbContext.SaveChangesAsync();
         }
 
