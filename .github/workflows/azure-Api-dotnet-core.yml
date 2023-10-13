@@ -55,6 +55,12 @@ jobs:
       - name: Build with dotnet
         run: dotnet build api --configuration Release
 
+      - name: test Infrastructure
+        run: dotnet test Infrastructure.test 
+
+      - name: test DomainModel
+        run: dotnet test DomainModel.test 
+
       - name: dotnet publish
         run: dotnet publish api -c Release -o ${{env.DOTNET_ROOT}}/myapp
 

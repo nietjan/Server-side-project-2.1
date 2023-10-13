@@ -59,7 +59,7 @@ jobs:
         run: dotnet test UserInterface.test 
 
       - name: test Infrastructure
-        run: dotnet test Infrastructure.tets 
+        run: dotnet test Infrastructure.test 
 
       - name: test DomainModel
         run: dotnet test DomainModel.test 
