@@ -103,7 +103,7 @@ namespace Infrastructure.test {
 
         //GetPackets
         [Fact]
-        public void Get_Only_Packets_Wich_Are_Not_Reserved() {
+        public void Get_Only_Packets_Which_Are_Not_Reserved() {
             //Arrange
             InMemoryRepository repository = new InMemoryRepository();
 
@@ -113,6 +113,55 @@ namespace Infrastructure.test {
             //Assert
             Assert.DoesNotContain(repository.packets.ElementAt(2) ,products);
         }
+
+        [Fact]
+        public void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_City() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var products = repository.GetPackets(city: City.Breda);
+
+            //Assert
+            Assert.DoesNotContain(repository.packets.ElementAt(2), products);
+        }
+
+        [Fact]
+        public void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_City_That_Is_Not_Used() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var products = repository.GetPackets(city: City.Tilburg);
+
+            //Assert
+            Assert.Empty(products);
+        }
+
+        [Fact]
+        public void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_Type_Of_Meal() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var products = repository.GetPackets(typeOfMeal: TypeOfMeal.Drink);
+
+            //Assert
+            Assert.Equal(repository.packets.ElementAt(1), products.Single());
+        }
+
+        [Fact]
+        public void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_Type_Of_Meal_That_Is_Not_Used() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var products = repository.GetPackets(typeOfMeal: TypeOfMeal.Bread);
+
+            //Assert
+            Assert.Empty(products);
+        }
+
 
         //GetPacketsOfCanteen
         [Fact]

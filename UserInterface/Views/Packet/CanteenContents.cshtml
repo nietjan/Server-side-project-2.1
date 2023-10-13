@@ -5,7 +5,7 @@
 <div class="p-2">
     @* canteen list dropdown *@
     @await Component.InvokeAsync("CanteenList")
-
+    <button class="button right-side">Register new packet</button>
     @foreach (DomainModel.Packet r in Model!) {
         <div class="container">
             <div class="row mt-4">
@@ -25,7 +25,9 @@
                 </div>
                 <div class="col-lg-2 col-sm-12 my-auto text-center p-0">
                     <button onclick="location.href='@Url.Action("Detail", "Packet", new {id = r.id})'" class="btn-default">Check</button>
-                    <button class="mx-2" onclick="location.href='@Url.Action("Update", "Packet", new {id = r.id})'" class="btn-default">Update</button>
+                    @if (r.reservedBy == null) {
+                        <button class="mx-2" onclick="location.href='@Url.Action("Update", "Packet", new {id = r.id})'" class="btn-default">Update</button>
+                    }
                 </div>
             </div>
         </div>

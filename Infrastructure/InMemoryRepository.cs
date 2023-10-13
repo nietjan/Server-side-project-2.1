@@ -96,7 +96,7 @@ namespace Infrastructure {
                 endPickup = DateTime.Now.AddDays(2),
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 5,
-                eighteenUp = true,
+                eighteenUp = false,
                 exampleProductList = productsExampleList.ElementAt(2)
             },new Packet() {
                 id = 3,
@@ -127,8 +127,20 @@ namespace Infrastructure {
             return true;
         }
 
-        public IEnumerable<Packet> GetPackets() {
-            return packets.Where(i => i.reservedBy == null);
+        public IEnumerable<Packet> GetPackets(City? city = null, TypeOfMeal? typeOfMeal = null) {
+            var list = packets.Where(i => i.reservedBy == null);
+
+            //city filer
+            if(city != null) {
+                list = list.Where(i => i.city == city);
+            }
+
+            //type of meal filter
+            if(typeOfMeal != null) {
+                list = list.Where(i => i.typeOfMeal == typeOfMeal);
+            }
+
+            return list;
         }
 
         public IEnumerable<Packet> GetReservedPackets(string studentSecurityId) {

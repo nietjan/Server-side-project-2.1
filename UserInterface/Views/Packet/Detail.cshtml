@@ -2,7 +2,7 @@
 @inject DomainServices.IRepository repository
 @inject ApplicationServices.IUserSession userSession
 @{
-
+    var securityId = userSession.GetUserIdentityId();
 }
 
 <div class="container">
@@ -28,19 +28,20 @@
                 <p class="red-bold-Text">Reserved</p>
             }
 
-            @if (Model.StudentIsAllowedToReservePacketByAge(repository.GetStudent(userSession.GetUserIdentityId())) == false){
+            @if (Model.StudentIsAllowedToReservePacketByAge(repository.GetStudent(securityId)) == false && 
+            !repository.UserIsCanteenStaff(securityId)) {
                 <p class="red-bold-Text">Not old enough</p>
             }
             
             @* check if user has already reserved a package or user is not a student*@
-            @if (repository.HasReservedForSpecificDay(Model?.startPickup, userSession.GetUserIdentityId()) || 
-            repository.UserIsCanteenStaff(userSession.GetUserIdentityId()) || 
+            @if (repository.HasReservedForSpecificDay(Model?.startPickup, securityId) || 
+            repository.UserIsCanteenStaff(securityId) ||
             Model.reservedBy != null || 
-            Model.StudentIsAllowedToReservePacketByAge(repository.GetStudent(userSession.GetUserIdentityId())) == false) {
+            Model.StudentIsAllowedToReservePacketByAge(repository.GetStudent(securityId)) == false) {
 
                 @* checks if packet is reserved and if so if it is reserved by the user*@
                 @if (Model.reservedBy != null) {
-                    @if (Model?.reservedBy?.securityId == userSession.GetUserIdentityId()) {
+                    @if (Model?.reservedBy?.securityId == securityId) {
                         @* package is reserved by user *@
                         <div class="button-middle-small-screen">
                             <button onclick="location.href='@Url.Action("unreservePacket", "Packet", new {id = Model?.id})'">Unreserve</button>

@@ -1,6 +1,64 @@
 ﻿@model IEnumerable<DomainModel.Packet>
+@inject DomainServices.IRepository _repository;
+@inject ApplicationServices.IUserSession userSession
 @{
+    var securityId = userSession.GetUserIdentityId();
 
+    //set city query params ready for filtering
+    string? city = null;
+    if(Context.Request.Query["city"].Count == 0) {
+        city = _repository.GetStudent(securityId)?.studyCity.ToString();
+    } else {
+        city = Context.Request.Query["city"].First();
+        var isValid = false;
+
+        //check of query param is valid
+        if (city != null) {
+            foreach (var item in Enum.GetValues(typeof(DomainModel.enums.City))) {
+                if (item.ToString()?.ToLower() == city.ToLower()) {
+                    isValid = true;
+                }
+            }
+            if (isValid == false) {
+                city = null;
+            }
+        }
+    }
+
+    //set typeOfMeal query params ready for filtering
+    string? typeOfMeal = null;
+    if (Context.Request.Query["typeOfMeal"].Count >= 1) {
+        typeOfMeal = Context.Request.Query["typeOfMeal"].First()?.ToString();
+        var isValid = false;
+
+        //check of query param is valid
+        if (typeOfMeal != null){
+            foreach (var item in Enum.GetValues(typeof(DomainModel.enums.TypeOfMeal))){
+                if (item.ToString()?.ToLower() == typeOfMeal.ToLower()){
+                    isValid = true;
+                }
+            }
+            if (isValid == false){
+                typeOfMeal = null;
+            }
+        }
+    } 
+
+    //filling the params
+    string cityUrl = "";
+    string typeOfMealUrl = "";
+
+    if(city != null) {
+        cityUrl = "City=" + city;
+    } else {
+        city = _repository.GetStudent(securityId)?.studyCity.ToString();
+    }
+
+    if (typeOfMeal != null) {
+        typeOfMealUrl = "TypeOfMeal=" + typeOfMeal;
+    } else {
+        typeOfMeal = "Meal type filter";
+    }
 }
 <div class="p-2">
     @if ((string?)ViewContext.RouteData.Values["id"] == "-1") {
@@ -13,10 +71,51 @@
     @* check if page is for registerd packeges or non regsiterd packages *@
     @if ((string?)ViewContext.RouteData.Values["action"] == "Reserved" && (string?)ViewContext.RouteData.Values["controller"] == "Packet") {
         @* Reserved Action *@
-        <button type="button" onclick="location.href='@Url.Action("List", "Packet")'">Packets</button>
+        <div class="text-center">
+            <button type="button" class="block button-center" onclick="location.href='@Url.Action("List", "Packet")'">Unreserved packets</button>
+        </div>
     } else {
         @* list Action*@
-        <button type="button" onclick="location.href='@Url.Action("Reserved", "Packet")'">Reserved</button>
+        <div class="text-center">
+            <button type="button" class="" onclick="location.href='@Url.Action("Reserved", "Packet")'">Reserved packets</button>
+        </div>
+
+        <div class="pt-2">
+            <h5 class="inline pt-2">Add filters </h5>
+
+            @* city filter*@
+            <div class="block mb-4">
+                <p class="m-0">City</p>
+                <div class="dropdown">
+                    <button type="button" class="dropdown-toggle button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @city
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        @foreach (var item in Enum.GetNames(typeof(DomainModel.enums.City))) {
+                            <li><a class="dropdown-item" onclick="FilterCity('@item');">@item</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            @* typeOfMeal filter *@
+            <div class="block">
+                <p class="m-0">Meal type</p>
+                <div class="dropdown">
+                    <button type="button" class="dropdown-toggle button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @typeOfMeal
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        @foreach (var item in Enum.GetNames(typeof(DomainModel.enums.TypeOfMeal))) {
+                            <li><a class="dropdown-item" onclick="FilterTypeOfMeal('@item');">@item</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            @* clear filter *@
+            <button class="mt-2" onclick="location.href='@Url.Action("List", "Packet")'">Clear filters</button>
+        </div>
     }
     @foreach (DomainModel.Packet r in Model!) {
         <div class="container">
@@ -37,3 +136,25 @@
         </div>
     }
 </div>
+
+@section Scripts{
+    <script>
+        function FilterCity(city) {
+            let url = '@Url.Action("List","Packet")?City='+city
+            if ('@typeOfMealUrl' != '') {
+                url += '&@typeOfMealUrl'
+            }
+            window.location.href = url
+        }
+
+        function FilterTypeOfMeal(typeOfMeal) {
+            let url = '@Url.Action("List","Packet")?'
+            if ('@cityUrl' == '') {
+                url += 'TypeOfMeal=' + typeOfMeal;
+            } else {
+                url += '@cityUrl&TypeOfMeal=' + typeOfMeal 
+            }
+            window.location.href = url
+        }
+    </script>
+}

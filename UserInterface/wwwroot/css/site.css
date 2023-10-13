@@ -83,6 +83,10 @@ select {
     display: block;
 }
 
+.inline {
+    display: inline;
+}
+
 /*home screen*/
 .product-img-holder {
     position: relative;
@@ -122,4 +126,8 @@ select {
     background-color: #BF0436;
     color: white;
     border-radius: 10px;
+}
+
+.right-side{
+    float: right;
 }

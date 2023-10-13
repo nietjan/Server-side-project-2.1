@@ -1,4 +1,5 @@
 ﻿using ApplicationServices;
+using DomainModel.enums;
 using DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,35 @@ namespace UserInterface.Controllers {
         }
 
         [AllowAnonymous]
-        public IActionResult List(int id) {
+        public IActionResult List(int id, string? city = null, string? typeOfMeal = null) {
             //If user is cantine staff redidirect to CanteenContents
-            
             if (_repository.UserIsCanteenStaff(_userSession.GetUserIdentityId())) {
                 return RedirectToAction("CanteenContents");
             }
+            City? cityFiler = null;
+            TypeOfMeal? typeOfMealFilter = null;
 
-            var list = _repository.GetPackets();
+            // Turns string city into City city if string is correct
+            if (city != null) {
+                foreach (var item in Enum.GetValues(typeof(City))) {
+                    if (item.ToString()?.ToLower() == city.ToLower()) {
+                        cityFiler = (City)item;
+                        break;
+                    }
+                }
+            }
+
+            //Turns string typeOfMeal into TypeOfMeal typeOfMeal if string is correct
+            if (typeOfMeal != null) {
+                foreach (var item in Enum.GetValues(typeof(TypeOfMeal))) {
+                    if (item.ToString()?.ToLower() == typeOfMeal.ToLower()) {
+                        typeOfMealFilter = (TypeOfMeal)item;
+                        break;
+                    }
+                }
+            }
+
+            var list = _repository.GetPackets(cityFiler, typeOfMealFilter);
             return View(list);
         }
 
@@ -37,8 +59,6 @@ namespace UserInterface.Controllers {
         [Authorize(Policy = "Staff")]
         public IActionResult CanteenContents(int id) {
             if (id == 0) {
-                //TODO: get Id from User;
-
                 var result = _repository.GetCantine(_userSession.GetUserIdentityId());
                 if(result == null) return RedirectToAction("Index", "Home");
                 id = result.id;
@@ -54,7 +74,7 @@ namespace UserInterface.Controllers {
             return View(content);
         }
 
-        [Authorize(Policy = "canteenStaff")]
+        [Authorize(Policy = "Staff")]
         [HttpGet]
         public IActionResult Register() {
             return View();
@@ -67,6 +87,10 @@ namespace UserInterface.Controllers {
                 ModelState.AddModelError("CustomError", "End date can't be before start date");
             }
 
+            if(packet.startPickup > DateTime.Now.AddDays(2)) ModelState.AddModelError("CustomError", "Start date can't be more than two days after today");
+            
+            if (packet.endPickup > DateTime.Now.AddDays(3)) ModelState.AddModelError("CustomError", "End date can't be more than two days after today");
+            
             if (ModelState.IsValid) {
                 //set canteen connected to user
                 packet.cantine = _repository.GetCantine(_userSession.GetUserIdentityId());

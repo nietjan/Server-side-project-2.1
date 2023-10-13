@@ -48,9 +48,21 @@ namespace Infrastructure {
             return list.First();
         }
 
-        public IEnumerable<Packet> GetPackets() {
+        public IEnumerable<Packet> GetPackets(City? city = null, TypeOfMeal? typeOfMeal = null) {
             //return packets that are not reserved
-            return context.packets.Where(i => i.reservedBy == null);
+            var list =  context.packets.Where(i => i.reservedBy == null);
+
+            //city filer
+            if (city != null) {
+                list = list.Where(i => i.city == city);
+            }
+
+            //type of meal filter
+            if (typeOfMeal != null) {
+                list = list.Where(i => i.typeOfMeal == typeOfMeal);
+            }
+
+            return list;
         }
 
         public IEnumerable<Packet>? GetPacketsOfCantine(int id) {

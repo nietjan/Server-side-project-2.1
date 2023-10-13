@@ -9,7 +9,7 @@ using DomainModel.enums;
 namespace DomainServices {
     public interface IRepository {
         //get all non reserved packets
-        public IEnumerable<Packet> GetPackets();
+        public IEnumerable<Packet> GetPackets(City? city = null,TypeOfMeal? typeOfMeal = null);
 
         //Return packets whith correct id, with non existing id returns null, contents should be orderd on date
         public IEnumerable<Packet>? GetPacketsOfCantine(int id);

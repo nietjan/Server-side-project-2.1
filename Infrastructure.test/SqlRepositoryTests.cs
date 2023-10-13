@@ -76,6 +76,86 @@ namespace Infrastructure.test {
             Assert.DoesNotContain(packet3, products);
         }
 
+        [Fact]
+        public async void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_City() {
+            //Arrange
+            Packet packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet2 = new Packet() { name = "", city = City.Tilburg, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet3 = new Packet() { name = "", reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+
+            _context.Add(packet);
+            _context.Add(packet2);
+            _context.Add(packet3);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var products = repository.GetPackets(city: City.Breda);
+
+            //Assert
+            Assert.DoesNotContain(packet2, products);
+            Assert.DoesNotContain(packet3, products);
+        }
+
+        [Fact]
+        public async void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_City_That_Is_Not_Used() {
+            //Arrange
+            Packet packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet2 = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet3 = new Packet() { name = "", reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+
+            _context.Add(packet);
+            _context.Add(packet2);
+            _context.Add(packet3);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var products = repository.GetPackets(city: City.Tilburg);
+
+            //Assert
+            Assert.Empty(products);
+        }
+
+        [Fact]
+        public async void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_Type_Of_Meal() {
+            //Arrange
+            Packet packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet2 = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Drink, price = 1 };
+            Packet packet3 = new Packet() { name = "", reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+
+            _context.Add(packet);
+            _context.Add(packet2);
+            _context.Add(packet3);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var products = repository.GetPackets(typeOfMeal: TypeOfMeal.Diner);
+
+            //Assert
+            Assert.Equal(packet, products.Single());
+            Assert.DoesNotContain(packet2, products);
+            Assert.DoesNotContain(packet3, products);
+        }
+
+        [Fact]
+        public async void Get_Only_Packets_Which_Are_Not_Reserved_With_Filter_Type_Of_Meal_That_Is_Not_Used() {
+            //Arrange
+            Packet packet = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet2 = new Packet() { name = "", city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            Packet packet3 = new Packet() { name = "", reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+
+            _context.Add(packet);
+            _context.Add(packet2);
+            _context.Add(packet3);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var products = repository.GetPackets(typeOfMeal: TypeOfMeal.Bread);
+
+            //Assert
+            Assert.Empty(products);
+        }
+
+
         //GetPacketsOfCanteen
         [Fact]
         public async void Get_All_Packets_Of_Canteen_With_Valid_Id() {
