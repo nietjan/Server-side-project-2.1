@@ -55,9 +55,15 @@ jobs:
       - name: Build with dotnet
         run: dotnet build UserInterface --configuration Release
 
-      - name: test
-        run: dotnet test Voedselversplling.sln 
+      - name: test userInterface
+        run: dotnet test UserInterface.test 
 
+      - name: test Infrastructure
+        run: dotnet test Infrastructure.tets 
+
+      - name: test DomainModel
+        run: dotnet test DomainModel.test 
+        
       - name: dotnet publish
         run: dotnet publish UserInterface -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
