@@ -55,6 +55,9 @@ jobs:
       - name: Build with dotnet
         run: dotnet build UserInterface --configuration Release
 
+      - name: Test
+        run: dotnet test --verbosity normal
+
       - name: dotnet publish
         run: dotnet publish UserInterface -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
