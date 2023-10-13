@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "api\api.csproj", "{F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices", "ApplicationServices\ApplicationServices.csproj", "{B391D3A6-C3BE-4EC3-8728-95AAA8AD10BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModelTests", "DomainModelTests\DomainModelTests.csproj", "{C0FD6783-3C09-4C5C-8006-B78925B04E42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainModel.test", "DomainModelTests\DomainModel.test.csproj", "{C0FD6783-3C09-4C5C-8006-B78925B04E42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
