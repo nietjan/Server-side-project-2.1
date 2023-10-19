@@ -7,7 +7,11 @@
     //set city query params ready for filtering
     string? city = null;
     if(Context.Request.Query["city"].Count == 0) {
-        city = _repository.GetStudent(securityId)?.studyCity.ToString();
+        if(securityId == "") {
+            city = "city filter";
+        } else {
+            city = _repository.GetStudent(securityId)?.studyCity.ToString();
+        }
     } else {
         city = Context.Request.Query["city"].First();
         var isValid = false;
@@ -60,6 +64,8 @@
         typeOfMeal = "Meal type filter";
     }
 }
+
+
 <div class="p-2">
     @if ((string?)ViewContext.RouteData.Values["id"] == "-1") {
         <p class="text-center error-border">Packet is already reserved</p>
@@ -72,7 +78,7 @@
     @if ((string?)ViewContext.RouteData.Values["action"] == "Reserved" && (string?)ViewContext.RouteData.Values["controller"] == "Packet") {
         @* Reserved Action *@
         <div class="text-center">
-            <button type="button" class="block button-center" onclick="location.href='@Url.Action("List", "Packet")'">Unreserved packets</button>
+            <button type="button" onclick="location.href='@Url.Action("List", "Packet")'">Unreserved packets</button>
         </div>
     } else {
         @* list Action*@
@@ -81,7 +87,10 @@
         </div>
 
         <div class="pt-2">
-            <h5 class="inline pt-2">Add filters </h5>
+            <h5 class="block pt-2">Filters </h5>
+
+            @* clear filter *@
+            <button class="mt-2 mb-2" onclick="location.href='@Url.Action("List", "Packet")'">Clear filters</button>
 
             @* city filter*@
             <div class="block mb-4">
@@ -112,9 +121,6 @@
                     </ul>
                 </div>
             </div>
-
-            @* clear filter *@
-            <button class="mt-2" onclick="location.href='@Url.Action("List", "Packet")'">Clear filters</button>
         </div>
     }
     @foreach (DomainModel.Packet r in Model!) {

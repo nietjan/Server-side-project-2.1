@@ -1,11 +1,29 @@
 ﻿@model IEnumerable<DomainModel.Packet>
+@inject DomainServices.IRepository _repository;
+@inject ApplicationServices.IUserSession _userSession;
 @{
-
+    var userId = _userSession.GetUserIdentityId();
+    var canteens = _repository.GetCanteens(userId);
 }
 <div class="p-2">
     @* canteen list dropdown *@
-    @await Component.InvokeAsync("CanteenList")
-    <button class="button right-side">Register new packet</button>
+    <div class="btn-group">
+        <button type="button" class="dropdown-toggle button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Select Canteen
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" asp-route-id="@canteens.First().id">@canteens.First().location</a>
+            <div class="dropdown-divider"></div>
+            @foreach (var item in canteens) {
+                if (item == canteens.First()) continue;
+
+                <a class="dropdown-item" asp-route-id="@item.id">@item.location</a>
+            }
+        </div>
+    </div>
+
+    <button class="button right-side" onclick="location.href='@Url.Action("Register")'">Register new packet</button>
+
     @foreach (DomainModel.Packet r in Model!) {
         <div class="container">
             <div class="row mt-4">

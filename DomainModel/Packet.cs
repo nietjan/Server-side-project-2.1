@@ -12,7 +12,6 @@ namespace DomainModel
         [Required(ErrorMessage = "Please enter a name")]
         public required string name { get; set; }
 
-        [Required(ErrorMessage = "Please choose a city")]
         public City? city { get; set; }
 
         //Date when pickup starts

@@ -37,7 +37,9 @@ namespace Infrastructure
     
             Canteen[] canteens = {
                     new Canteen() {location = "Hogeschoollaan", city = DomainModel.enums.City.Breda, servesHotMeals = true },
-                    new Canteen() {location = "FifthLa", city = DomainModel.enums.City.Breda, servesHotMeals = true }, 
+                    new Canteen() {location = "DenBoschCanteen", city = DomainModel.enums.City.DenBosch, servesHotMeals = true },
+                    new Canteen() {location = "Breda LA", city = DomainModel.enums.City.Breda, servesHotMeals = true },
+                    new Canteen() {location = "Breda LD", city = DomainModel.enums.City.Breda, servesHotMeals = true },
             };
 
             CanteenStaffMember[] staff = { //Add id of security
@@ -62,7 +64,7 @@ namespace Infrastructure
             ExampleProductList[] exampleList = {
                     new ExampleProductList() {list = new List<Product>(){ productsList[0], productsList[1], productsList[2]}, type = DomainModel.enums.TypeOfMeal.Bread},
                     new ExampleProductList() {list = new List<Product>(){ productsList[3], productsList[4], productsList[5]}, type = DomainModel.enums.TypeOfMeal.Diner},
-                    new ExampleProductList() { list = new List<Product>(){ productsList[6], productsList[7], productsList[8]}, type = DomainModel.enums.TypeOfMeal.Drink},
+                    new ExampleProductList() {list = new List<Product>(){ productsList[6], productsList[7], productsList[8]}, type = DomainModel.enums.TypeOfMeal.Drink},
             };
 
             Student[] students = {
@@ -71,18 +73,18 @@ namespace Infrastructure
             };
 
             Packet[] packets = {
-                new Packet(){name = "packet1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[0], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet2", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=15, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "packet3", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[2], price=15, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet4", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=2, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "packet5", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet6", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=22, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "packet7", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=35, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet8", reservedBy = students[1], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "packet9", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet10", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[0], price=7, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "packet11", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[1], price=7, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet12", canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[2], price=44, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Bread1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[0], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Diner2", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=15, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Drink1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[2], price=15, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Bread2", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=2, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Diner2", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Drink2", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=22, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Bread3", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=35, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Diner3", reservedBy = students[1], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Drink3", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=5, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Bread4", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[0], price=7, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Diner4", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[1], price=7, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Drink4", canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[2], price=44, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
             };
 
             //set 18 value for all packets

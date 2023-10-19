@@ -193,8 +193,8 @@ namespace UserInterface.test {
             var result = await sut.Register(packet) as RedirectToActionResult;
 
             //Assert
-            Assert.Equal("Index", result?.ActionName);
-            Assert.Equal("Home", result?.ControllerName);
+            Assert.Equal("CanteenContents", result?.ActionName);
+            Assert.Null(result?.ControllerName);
         }
 
         [Fact]

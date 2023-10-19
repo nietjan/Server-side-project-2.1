@@ -3,11 +3,6 @@ using DomainModel;
 using DomainModel.enums;
 using DomainServices;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure {
     public class SqlRepository : IRepository {
@@ -29,17 +24,18 @@ namespace Infrastructure {
         }
         
         public IEnumerable<Canteen> GetCanteens(string staffSecurityId) {
-            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId);
+            var userCanteenList = context.canteenStaffMembers.Include(i => i.canteen).Where(i => i.securityId == staffSecurityId);
             //If user does not have canteen, return all canteens;
             if(userCanteenList.Count() != 1) {
-                return context.canteen;
+                return context.canteen.OrderBy(i => i.city).ThenBy(i => i.location);
             }
 
             //if user does have canteen, put connected canteen first in list
             var list = new List<Canteen>() {
                 userCanteenList.First().canteen,
             };
-            return list.Concat(context.canteen.Where(i => !i.id.Equals(userCanteenList.First().id)));
+            var otherCanteens = context.canteen.Where(i => !i.id.Equals(userCanteenList.First().id)).OrderBy(i => i.city).ThenBy(i => i.location);
+            return list.Concat(otherCanteens);
         }
 
         public ExampleProductList? GetExampleProducts(TypeOfMeal? typeOfMeal) {
@@ -55,7 +51,7 @@ namespace Infrastructure {
 
         public IEnumerable<Packet> GetPackets(City? city = null, TypeOfMeal? typeOfMeal = null) {
             //return packets that are not reserved
-            var list =  context.packets.Where(i => i.reservedBy == null);
+            var list =  context.packets.Include(i => i.canteen).Include(i => i.reservedBy).Where(i => i.reservedBy == null);
 
             //city filer
             if (city != null) {
@@ -77,7 +73,7 @@ namespace Infrastructure {
 
         public IEnumerable<Packet>? GetPacketsOfCanteen(int id) {
             //get all packets that are connected to a canteen
-            var list = context.canteen
+            var list = context.canteen.Include(i => i.packetList).ThenInclude(i => i.reservedBy)
                 .Where(i => i.id == id);
                 
             //if not exactly 1 item, return null
@@ -93,11 +89,11 @@ namespace Infrastructure {
 
         public IEnumerable<Packet> GetReservedPackets(string studentSecurityId) {
             //returns all packets that are reserved by a specific email
-            return context.packets.Where(i => i.reservedBy != null).Where(i => i.reservedBy.securityId == studentSecurityId);
+            return context.packets.Include(i => i.canteen).Where(i => i.reservedBy != null).Where(i => i.reservedBy.securityId == studentSecurityId);
         }
 
         public Packet? GetSinglePacket(int id) {
-            var list = context.packets.Where(i => i.id == id);
+            var list = context.packets.Include(i => i.reservedBy).Include(i => i.canteen).Include(i => i.exampleProductList).ThenInclude(i => i.list).Where(i => i.id == id);
 
             if (list.Count() > 0) {
                 return list.First();
@@ -111,7 +107,7 @@ namespace Infrastructure {
                 return false;
             }
 
-            if(context.packets.Where(i => i.reservedBy != null)
+            if(context.packets.Include(i => i.reservedBy).Where(i => i.reservedBy != null)
                 .Where(i => i.reservedBy.securityId == studentSecurityId
             && i.startPickup.Value.Day == packetDate.Value.Day
             && i.startPickup.Value.Month == packetDate.Value.Month
@@ -124,7 +120,7 @@ namespace Infrastructure {
 
         public async Task<string>? ReservePacket(int packetId, string studentSecurityId) {
             //check if package exists
-            var list = context.packets.Where(i => i.id == packetId);
+            var list = context.packets.Include(i => i.reservedBy).Where(i => i.id == packetId);
             if (list.Count() == 0) {
                 return "Packet not found";
             }
@@ -163,17 +159,30 @@ namespace Infrastructure {
         }
 
         public async Task<bool> UpdatePacket(Packet packet) {
-            if(context.packets.Where(i => i.id == packet.id).Count() != 1) {
+            //check if packet exists
+            var actualPacketList = context.packets.Include(i => i.canteen).Include(i => i.reservedBy).Where(i => i.id == packet.id);
+            if (actualPacketList.Count() != 1) {
                 return false;
             }
+            var actualPacket = actualPacketList.Single();
 
-            context.Update(packet);
+            //change values
+            actualPacket.name = packet.name;
+            actualPacket.startPickup = packet.startPickup;
+            actualPacket.endPickup = packet.endPickup;
+            actualPacket.typeOfMeal = packet.typeOfMeal;
+            actualPacket.price = packet.price;
+            actualPacket.exampleProductList = packet.exampleProductList;
+            actualPacket.eighteenUp = packet.eighteenUp;
+
+            //update in DB
+            context.Update(actualPacket);
             await context.SaveChangesAsync();
             return true;
         }
 
         public Canteen? GetCanteen(string staffSecurityId) {
-            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId && i.canteen != null);
+            var userCanteenList = context.canteenStaffMembers.Include(i => i.canteen).Where(i => i.securityId == staffSecurityId && i.canteen != null);
             //If user does not have canteen, return all canteens;
             if (userCanteenList.Count() != 1) {
                 return null;
@@ -183,14 +192,13 @@ namespace Infrastructure {
 
         public bool UserIsCanteenStaff(string securityId) {
             var userList = context.canteenStaffMembers.Where(i => i.securityId == securityId);
-            if(userList.Count() != 1) {
-                return false;
-            }
-            return true;
+            
+            if(userList.Count() != 1) return false;
+            else return true;
         }
 
         public async Task<string>? UnreservePacket(int packetId, string studentSecurityId) {
-            var list = context.packets.Where(i => i.id == packetId);
+            var list = context.packets.Include(i => i.reservedBy).Where(i => i.id == packetId);
 
             if (list.Count() == 0) {
                 return "Packet not found";

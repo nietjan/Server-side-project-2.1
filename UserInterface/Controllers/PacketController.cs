@@ -27,6 +27,7 @@ namespace UserInterface.Controllers {
             City? cityFiler = null;
             TypeOfMeal? typeOfMealFilter = null;
 
+   
             // Turns string city into City city if string is correct
             if (city != null) {
                 foreach (var item in Enum.GetValues(typeof(City))) {
@@ -94,6 +95,7 @@ namespace UserInterface.Controllers {
             if (ModelState.IsValid) {
                 //set canteen connected to user
                 packet.canteen = _repository.GetCanteen(_userSession.GetUserIdentityId());
+                packet.city = packet?.canteen?.city;
 
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
@@ -106,7 +108,7 @@ namespace UserInterface.Controllers {
                     ModelState.AddModelError("CustomError", "Something went wrong, please try again");
                     return View();
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("CanteenContents");
             } else {
                 return View();
             }
@@ -135,9 +137,6 @@ namespace UserInterface.Controllers {
             }
 
             if (ModelState.IsValid) {
-                //set Canteen connected to user
-                packet.canteen = _repository.GetCanteen(_userSession.GetUserIdentityId());
-
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
 
