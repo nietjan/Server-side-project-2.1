@@ -1,7 +1,7 @@
 ﻿using DomainModel.enums;
 using DomainModel;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Sockets;
+using NSubstitute;
 
 namespace Infrastructure.test {
     public class SqlRepositoryTests : IDisposable {
@@ -12,7 +12,9 @@ namespace Infrastructure.test {
             var optionsBuilder = new DbContextOptionsBuilder<PacketContext>();
             optionsBuilder.UseInMemoryDatabase(databaseName: "AuthorDb");
             _context = new PacketContext(optionsBuilder.Options);
-            repository = new SqlRepository(_context);
+            var sessionMock = Substitute.For<ApplicationServices.IUserSession>();
+            sessionMock.GetUserIdentityId().Returns("test");
+            repository = new SqlRepository(_context, sessionMock);
     }
         public void Dispose() {
             _context.Database.EnsureDeleted();
@@ -225,9 +227,7 @@ namespace Infrastructure.test {
 
         [Fact]
         public async void Get_List_Of_Packets_Whom_Are_Reserved_With_InCorrect_Email_That_Is_Empty() {
-            //Arrange
-            SqlRepository repository = new SqlRepository(_context);
-            
+            //Arrange           
             _context.packets.Add(new Packet() { name = "", reservedBy = new Student() { name = "test@test.com", studentNumber = 123, studyCity = City.Breda }, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 });
             await _context.SaveChangesAsync();
 

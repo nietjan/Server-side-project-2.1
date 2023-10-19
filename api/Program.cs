@@ -26,7 +26,7 @@ builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
         sqlOptions.EnableRetryOnFailure();
     }
 ), ServiceLifetime.Transient);
-builder.Services.AddScoped<IRepository, SqlRepository>();
+builder.Services.AddScoped<IRepository, InMemoryRepository>();
 
 //identity
 builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlServer(

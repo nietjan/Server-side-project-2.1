@@ -31,7 +31,7 @@ namespace api.Controllers {
                     Message = "Email or password are incorrect"
                 });
             }
-            //404 - not found - package does not exist
+            //404 - not found - user does not exist
             else return NotFound(new {
                 StatusCode = 404,
                 Message = "User not found"

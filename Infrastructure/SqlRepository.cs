@@ -1,4 +1,5 @@
-﻿using DomainModel;
+﻿using ApplicationServices;
+using DomainModel;
 using DomainModel.enums;
 using DomainServices;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,12 @@ namespace Infrastructure {
     public class SqlRepository : IRepository {
 
         private PacketContext context { get; set; }
-        public SqlRepository(PacketContext _context) {
+
+        private readonly IUserSession userSession;
+
+        public SqlRepository(PacketContext _context, ApplicationServices.IUserSession userSession) {
             this.context = _context;
+            this.userSession = userSession;
         }
 
         public async Task<bool> AddPacket(Packet packet) {
@@ -55,6 +60,11 @@ namespace Infrastructure {
             //city filer
             if (city != null) {
                 list = list.Where(i => i.city == city);
+            } else {
+                var student = GetStudent(userSession.GetUserIdentityId());
+                if(student != null) {
+                    list = list.Where(i => i.city == student.studyCity);
+                }
             }
 
             //type of meal filter

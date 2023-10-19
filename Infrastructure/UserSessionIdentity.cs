@@ -7,10 +7,7 @@ using System.Text;
 namespace Infrastructure {
     public class UserSessionIdentity : IUserSession {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        //private ISession _session => _httpContextAccessor.HttpContext.Session;
-        private readonly string sessionKey = "UserSecurityId";
-        
+        private readonly IHttpContextAccessor _httpContextAccessor;    
 
         public UserSessionIdentity(IHttpContextAccessor httpContextAccessor, 
             UserManager<IdentityUser> userManager) {
@@ -32,9 +29,6 @@ namespace Infrastructure {
             }
 
             return user.Id;
-            //return _session.GetString(sessionKey) ?? string.Empty;
         }
-
- 
     }
 }

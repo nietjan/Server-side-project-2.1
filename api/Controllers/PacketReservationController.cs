@@ -35,13 +35,6 @@ namespace api.Controllers {
                 StatusCode = 401,
                 message = "Unauthorized"
             });
-
-            if (id == 0) {
-                return BadRequest(new {
-                    StatusCode = 400,
-                    message = "PacketId is not defined"
-                });
-            }
             
             if(id <= 0) {
                 return BadRequest(new {
