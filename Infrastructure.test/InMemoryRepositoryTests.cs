@@ -15,7 +15,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
             var packet = new Packet() {
                 name = "Packet2",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
@@ -38,7 +38,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
             var packet = new Packet() {
                 name = "Packet2",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
@@ -61,7 +61,7 @@ namespace Infrastructure.test {
             var packet = new Packet() {
                 id = 4,
                 name = "Packet2",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
@@ -85,7 +85,7 @@ namespace Infrastructure.test {
             var packet = new Packet() {
                 id = 0,
                 name = "Packet2",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),

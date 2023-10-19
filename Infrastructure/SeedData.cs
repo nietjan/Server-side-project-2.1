@@ -1,15 +1,8 @@
-﻿using Azure;
-using DomainModel;
+﻿using DomainModel;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -53,17 +46,17 @@ namespace Infrastructure
             };
 
             Product[] productsList = {
-                    new Product() {alcoholic=true, name="bread1" },
-                    new Product() {alcoholic=true, name="bread2" },
+                    new Product() {alcoholic=false, name="bread1" },
+                    new Product() {alcoholic=false, name="bread2" },
                     new Product() {alcoholic=false, name="bread3"},
 
-                    new Product() {alcoholic=true, name="diner1"},
+                    new Product() {alcoholic=false, name="diner1"},
                     new Product() {alcoholic=false, name="diner2"},
                     new Product() {alcoholic=false, name="diner3"},
 
-                    new Product() {alcoholic=false, name="drink1"},
+                    new Product() {alcoholic=true, name="drink1"},
                     new Product() {alcoholic=false, name="drink2"},
-                    new Product() {alcoholic=false, name="drink3"},
+                    new Product() {alcoholic=true, name="drink3"},
             };
 
             ExampleProductList[] exampleList = {
@@ -79,11 +72,21 @@ namespace Infrastructure
 
             Packet[] packets = {
                 new Packet(){name = "packet1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[0], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "packet2", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=15, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)}
+                new Packet(){name = "packet2", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=15, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "packet3", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[2], price=15, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet4", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=2, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "packet5", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet6", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=22, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "packet7", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=35, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet8", reservedBy = students[1], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "packet9", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet10", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[0], price=7, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "packet11", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[1], price=7, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "packet12", canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[2], price=44, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
             };
 
-            packets[0].SetEighteenUpValue();
-            packets[1].SetEighteenUpValue();
+            //set 18 value for all packets
+            foreach (var packet in packets) packet.SetEighteenUpValue();
 
 
             _dbContext.canteen.AddRange(canteens);

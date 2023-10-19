@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<IRepository, InMemoryRepository>();
+builder.Services.AddScoped<IRepository, SqlRepository>();
 
 builder.Services.AddTransient<SeedData>();
 

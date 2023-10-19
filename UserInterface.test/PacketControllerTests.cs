@@ -19,7 +19,7 @@ namespace UserInterface.test {
         new Packet() {
                 id = 1,
                 name = "Packet1",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
@@ -31,7 +31,7 @@ namespace UserInterface.test {
             new Packet() {
                 id = 2,
                 name = "Packet2",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
@@ -42,7 +42,7 @@ namespace UserInterface.test {
             },new Packet() {
                 id = 3,
                 name = "Packet3",
-                Canteen = InMemoryRepository.Canteen,
+                canteen = InMemoryRepository.Canteen,
                 city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
@@ -184,7 +184,7 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 1,
                 eighteenUp = true,
-                Canteen = Infrastructure.InMemoryRepository.Canteen,
+                canteen = Infrastructure.InMemoryRepository.Canteen,
             };
             repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             repoMock.AddPacket(packet).Returns(true);
@@ -208,7 +208,7 @@ namespace UserInterface.test {
                 endPickup = DateTime.Now.AddDays(1),
                 typeOfMeal = TypeOfMeal.Drink,
                 eighteenUp = true,
-                Canteen = Infrastructure.InMemoryRepository.Canteen,
+                canteen = Infrastructure.InMemoryRepository.Canteen,
             };
             repoMock.AddPacket(packet).Returns(true);
             repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
@@ -268,7 +268,7 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 1,
                 eighteenUp = true,
-                Canteen = Infrastructure.InMemoryRepository.Canteen,
+                canteen = Infrastructure.InMemoryRepository.Canteen,
             };
             repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             repoMock.UpdatePacket(Arg.Any<Packet>()).Returns(true);
@@ -292,7 +292,7 @@ namespace UserInterface.test {
                 endPickup = DateTime.Now.AddDays(1),
                 typeOfMeal = TypeOfMeal.Drink,
                 eighteenUp = true,
-                Canteen = Infrastructure.InMemoryRepository.Canteen,
+                canteen = Infrastructure.InMemoryRepository.Canteen,
             };
             repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             repoMock.UpdatePacket(packet).Returns(false);

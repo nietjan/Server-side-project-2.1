@@ -434,7 +434,7 @@ namespace Infrastructure.test {
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CanteenStaffMember() {securityId="1", Canteen = canteen, name="" });
+            _context.canteenStaffMembers.Add(new CanteenStaffMember() {securityId="1", canteen = canteen, name="" });
             await _context.SaveChangesAsync();
 
             //Act
@@ -456,7 +456,7 @@ namespace Infrastructure.test {
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CanteenStaffMember() { securityId = "1", Canteen = canteen, name = "" });
+            _context.canteenStaffMembers.Add(new CanteenStaffMember() { securityId = "1", canteen = canteen, name = "" });
             await _context.SaveChangesAsync();
 
             //Act
@@ -464,7 +464,7 @@ namespace Infrastructure.test {
 
             //Assert
             Assert.NotNull(list);
-            Assert.Equal(canteen, _context.canteenStaffMembers.First().Canteen);
+            Assert.Equal(canteen, _context.canteenStaffMembers.First().canteen);
             Assert.Equal(3, _context.canteen.Count());
         }
 
@@ -590,7 +590,7 @@ namespace Infrastructure.test {
             //Arrange
             string securityId = "123";
             var canteen = new Canteen() { location = "" };
-            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123, Canteen = canteen };
+            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123, canteen = canteen };
             _context.canteenStaffMembers.Add(staffMember);
             _context.canteen.Add(canteen);
             await _context.SaveChangesAsync();
@@ -607,7 +607,7 @@ namespace Infrastructure.test {
             //Arrange
             string securityId = "123";
             var canteen = new Canteen() { location = "" };
-            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123, Canteen = canteen };
+            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123, canteen = canteen };
             _context.canteenStaffMembers.Add(staffMember);
             _context.canteen.Add(canteen);
             await _context.SaveChangesAsync();

@@ -53,7 +53,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Canteenid")
+                    b.Property<int?>("canteenid")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -69,7 +69,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("Canteenid");
+                    b.HasIndex("canteenid");
 
                     b.ToTable("canteenStaffMembers");
                 });
@@ -98,7 +98,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Canteenid")
+                    b.Property<int?>("canteenid")
                         .HasColumnType("int");
 
                     b.Property<int>("city")
@@ -134,7 +134,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("Canteenid");
+                    b.HasIndex("canteenid");
 
                     b.HasIndex("exampleProductListid");
 
@@ -203,18 +203,18 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
             modelBuilder.Entity("DomainModel.CanteenStaffMember", b =>
                 {
-                    b.HasOne("DomainModel.Canteen", "Canteen")
+                    b.HasOne("DomainModel.Canteen", "canteen")
                         .WithMany()
-                        .HasForeignKey("Canteenid");
+                        .HasForeignKey("canteenid");
 
-                    b.Navigation("Canteen");
+                    b.Navigation("canteen");
                 });
 
             modelBuilder.Entity("DomainModel.Packet", b =>
                 {
-                    b.HasOne("DomainModel.Canteen", "Canteen")
+                    b.HasOne("DomainModel.Canteen", "canteen")
                         .WithMany("packetList")
-                        .HasForeignKey("Canteenid");
+                        .HasForeignKey("canteenid");
 
                     b.HasOne("DomainModel.ExampleProductList", "exampleProductList")
                         .WithMany()
@@ -224,7 +224,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                         .WithMany("reservedPackets")
                         .HasForeignKey("reservedByid");
 
-                    b.Navigation("Canteen");
+                    b.Navigation("canteen");
 
                     b.Navigation("exampleProductList");
 
