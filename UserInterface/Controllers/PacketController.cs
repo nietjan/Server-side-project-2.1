@@ -20,7 +20,7 @@ namespace UserInterface.Controllers {
 
         [AllowAnonymous]
         public IActionResult List(int id, string? city = null, string? typeOfMeal = null) {
-            //If user is cantine staff redidirect to CanteenContents
+            //If user is Canteen staff redidirect to CanteenContents
             if (_repository.UserIsCanteenStaff(_userSession.GetUserIdentityId())) {
                 return RedirectToAction("CanteenContents");
             }
@@ -59,12 +59,12 @@ namespace UserInterface.Controllers {
         [Authorize(Policy = "Staff")]
         public IActionResult CanteenContents(int id) {
             if (id == 0) {
-                var result = _repository.GetCantine(_userSession.GetUserIdentityId());
+                var result = _repository.GetCanteen(_userSession.GetUserIdentityId());
                 if(result == null) return RedirectToAction("Index", "Home");
                 id = result.id;
             }
 
-            var content = _repository.GetPacketsOfCantine(id);
+            var content = _repository.GetPacketsOfCanteen(id);
 
             //check if there is content 
             if (content == null) {
@@ -93,7 +93,7 @@ namespace UserInterface.Controllers {
             
             if (ModelState.IsValid) {
                 //set canteen connected to user
-                packet.cantine = _repository.GetCantine(_userSession.GetUserIdentityId());
+                packet.canteen = _repository.GetCanteen(_userSession.GetUserIdentityId());
 
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);
@@ -135,8 +135,8 @@ namespace UserInterface.Controllers {
             }
 
             if (ModelState.IsValid) {
-                //set cantine connected to user
-                packet.cantine = _repository.GetCantine(_userSession.GetUserIdentityId());
+                //set Canteen connected to user
+                packet.canteen = _repository.GetCanteen(_userSession.GetUserIdentityId());
 
                 //add example products
                 packet.exampleProductList = _repository.GetExampleProducts(packet.typeOfMeal);

@@ -28,7 +28,7 @@ namespace Infrastructure {
             return true; 
         }
         
-        public IEnumerable<Cantine> GetCantines(string staffSecurityId) {
+        public IEnumerable<Canteen> GetCanteens(string staffSecurityId) {
             var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId);
             //If user does not have canteen, return all canteens;
             if(userCanteenList.Count() != 1) {
@@ -36,8 +36,8 @@ namespace Infrastructure {
             }
 
             //if user does have canteen, put connected canteen first in list
-            var list = new List<Cantine>() {
-                userCanteenList.First().cantine,
+            var list = new List<Canteen>() {
+                userCanteenList.First().canteen,
             };
             return list.Concat(context.canteen.Where(i => !i.id.Equals(userCanteenList.First().id)));
         }
@@ -75,7 +75,7 @@ namespace Infrastructure {
             return list;
         }
 
-        public IEnumerable<Packet>? GetPacketsOfCantine(int id) {
+        public IEnumerable<Packet>? GetPacketsOfCanteen(int id) {
             //get all packets that are connected to a canteen
             var list = context.canteen
                 .Where(i => i.id == id);
@@ -172,13 +172,13 @@ namespace Infrastructure {
             return true;
         }
 
-        public Cantine? GetCantine(string staffSecurityId) {
-            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId && i.cantine != null);
+        public Canteen? GetCanteen(string staffSecurityId) {
+            var userCanteenList = context.canteenStaffMembers.Where(i => i.securityId == staffSecurityId && i.canteen != null);
             //If user does not have canteen, return all canteens;
             if (userCanteenList.Count() != 1) {
                 return null;
             }
-            return userCanteenList.First().cantine;
+            return userCanteenList.First().canteen;
         }
 
         public bool UserIsCanteenStaff(string securityId) {

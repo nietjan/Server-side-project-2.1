@@ -25,7 +25,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DomainModel.Cantine", b =>
+            modelBuilder.Entity("DomainModel.Canteen", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -48,7 +48,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     b.ToTable("canteen");
                 });
 
-            modelBuilder.Entity("DomainModel.CantineStaffMember", b =>
+            modelBuilder.Entity("DomainModel.CanteenStaffMember", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("cantineid")
+                    b.Property<int?>("Canteenid")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -72,7 +72,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("cantineid");
+                    b.HasIndex("Canteenid");
 
                     b.ToTable("canteenStaffMembers");
                 });
@@ -101,7 +101,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("cantineid")
+                    b.Property<int?>("Canteenid")
                         .HasColumnType("int");
 
                     b.Property<int>("city")
@@ -137,7 +137,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("cantineid");
+                    b.HasIndex("Canteenid");
 
                     b.HasIndex("exampleProductListid");
 
@@ -204,20 +204,20 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     b.ToTable("students");
                 });
 
-            modelBuilder.Entity("DomainModel.CantineStaffMember", b =>
+            modelBuilder.Entity("DomainModel.CanteenStaffMember", b =>
                 {
-                    b.HasOne("DomainModel.Cantine", "cantine")
+                    b.HasOne("DomainModel.Canteen", "Canteen")
                         .WithMany()
-                        .HasForeignKey("cantineid");
+                        .HasForeignKey("Canteenid");
 
-                    b.Navigation("cantine");
+                    b.Navigation("Canteen");
                 });
 
             modelBuilder.Entity("DomainModel.Packet", b =>
                 {
-                    b.HasOne("DomainModel.Cantine", "cantine")
+                    b.HasOne("DomainModel.Canteen", "Canteen")
                         .WithMany("packetList")
-                        .HasForeignKey("cantineid");
+                        .HasForeignKey("Canteenid");
 
                     b.HasOne("DomainModel.ExampleProductList", "exampleProductList")
                         .WithMany()
@@ -227,7 +227,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                         .WithMany("reservedPackets")
                         .HasForeignKey("reservedByid");
 
-                    b.Navigation("cantine");
+                    b.Navigation("Canteen");
 
                     b.Navigation("exampleProductList");
 
@@ -241,7 +241,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                         .HasForeignKey("ExampleProductListid");
                 });
 
-            modelBuilder.Entity("DomainModel.Cantine", b =>
+            modelBuilder.Entity("DomainModel.Canteen", b =>
                 {
                     b.Navigation("packetList");
                 });

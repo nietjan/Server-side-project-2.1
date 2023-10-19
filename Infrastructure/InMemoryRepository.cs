@@ -12,7 +12,7 @@ using DomainServices;
 namespace Infrastructure {
     public class InMemoryRepository : IRepository {
         //products for dummy packets list
-        public static readonly Cantine cantine = new Cantine() {id = 1, city = City.Breda, location = "Hogenschoollaan", servesHotMeals = true};
+        public static readonly Canteen Canteen = new Canteen() {id = 1, city = City.Breda, location = "Hogenschoollaan", servesHotMeals = true};
 
         public static List<ExampleProductList> productsExampleList = new List<ExampleProductList>() {
             new ExampleProductList() {
@@ -78,8 +78,8 @@ namespace Infrastructure {
             new Packet() {
                 id = 1,
                 name = "Packet1",
-                cantine = cantine,
-                city = cantine.city,
+                canteen = Canteen,
+                city = Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Diner,
@@ -90,8 +90,8 @@ namespace Infrastructure {
             new Packet() {
                 id = 2,
                 name = "Packet2",
-                cantine = cantine,
-                city = cantine.city,
+                canteen = Canteen,
+                city = Canteen.city,
                 startPickup = DateTime.Now.AddDays(1),
                 endPickup = DateTime.Now.AddDays(2),
                 typeOfMeal = TypeOfMeal.Drink,
@@ -101,8 +101,8 @@ namespace Infrastructure {
             },new Packet() {
                 id = 3,
                 name = "Packet3",
-                cantine = cantine,
-                city = cantine.city,
+                canteen = Canteen,
+                city = Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Bread,
@@ -114,7 +114,7 @@ namespace Infrastructure {
         };
 
         public InMemoryRepository() {
-            cantine.packetList = packets;
+            Canteen.packetList = packets;
         }
 
         public async Task<bool> AddPacket(Packet packet) {
@@ -187,17 +187,17 @@ namespace Infrastructure {
             return null;
         }
 
-        public IEnumerable<Packet>? GetPacketsOfCantine(int id) {
-            if(id != cantine.id) {
+        public IEnumerable<Packet>? GetPacketsOfCanteen(int id) {
+            if(id != Canteen.id) {
                 return null;
             }
 
-            return packets.Where(i => i.cantine.id == id).OrderBy(i => i.startPickup);
+            return packets.Where(i => i.canteen.id == id).OrderBy(i => i.startPickup);
         }
 
-        public IEnumerable<Cantine> GetCantines(string staffSecurityId) {
-            //In real Repo should return all cantines of table cantine and returns userId Canteen first
-            return new List<Cantine>() { cantine, cantine, cantine};
+        public IEnumerable<Canteen> GetCanteens(string staffSecurityId) {
+            //In real Repo should return all Canteens of table Canteen and returns userId Canteen first
+            return new List<Canteen>() { Canteen, Canteen, Canteen};
         }
 
         public bool HasReservedForSpecificDay(DateTime? packetDate,  string studentSecurityId) {
@@ -238,8 +238,8 @@ namespace Infrastructure {
             return true;
         }
 
-        public Cantine? GetCantine(string staffSecurityId) {
-            return cantine;
+        public Canteen? GetCanteen(string staffSecurityId) {
+            return Canteen;
         }
 
         public bool UserIsCanteenStaff(string securityId) {

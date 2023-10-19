@@ -16,7 +16,7 @@
                     <h5>@r.name</h5>
                     <p class="my-2">@string.Format("€ {0:N2} Euro", r.price)</p>
                     <p class="my-2">@r.startPickup?.ToString("MMMM dd")</p>
-                    <p class="my-2">@r.city - @r.cantine.location</p>
+                    <p class="my-2">@r.city - @r.canteen.location</p>
                     @if(r.reservedBy == null) {
                         <p class="my-2">Not reserved</p>
                     } else {

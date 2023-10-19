@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DomainModel {
-    public class CantineStaffMember {
+    public class CanteenStaffMember {
         [Key]
         public int id { get; set; }
 
@@ -16,7 +16,7 @@ namespace DomainModel {
 
         public int staffNumber { get; set; }
 
-        public Cantine? cantine { get; set; }
+        public Canteen? canteen { get; set; }
 
        
     }

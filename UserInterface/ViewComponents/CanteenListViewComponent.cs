@@ -16,9 +16,9 @@ namespace UserInterface.ViewComponents {
 
         public IViewComponentResult Invoke() {
             // logic for preparing data
-            var cantines = _repository.GetCantines(_userSession.GetUserIdentityId());
+            var Canteens = _repository.GetCanteens(_userSession.GetUserIdentityId());
 
-            return View(cantines);
+            return View(Canteens);
         }
     }
 }

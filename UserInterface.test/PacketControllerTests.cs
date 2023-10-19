@@ -19,8 +19,8 @@ namespace UserInterface.test {
         new Packet() {
                 id = 1,
                 name = "Packet1",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Diner,
@@ -31,8 +31,8 @@ namespace UserInterface.test {
             new Packet() {
                 id = 2,
                 name = "Packet2",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Drink,
@@ -42,8 +42,8 @@ namespace UserInterface.test {
             },new Packet() {
                 id = 3,
                 name = "Packet3",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Bread,
@@ -109,8 +109,8 @@ namespace UserInterface.test {
         [Fact]
         public void Canteen_Content_With_Id_Should_Return_View() {
             //Arrange
-            repoMock.GetPacketsOfCantine(Arg.Any<int>()).Returns((packets).AsQueryable());
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetPacketsOfCanteen(Arg.Any<int>()).Returns((packets).AsQueryable());
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
 
             //Act
             var result = sut.CanteenContents(1) as ViewResult;
@@ -123,8 +123,8 @@ namespace UserInterface.test {
         [Fact]
         public void Canteen_Content_Without_Id_Should_Return_View() {
             //Arrange
-            repoMock.GetPacketsOfCantine(1).Returns((packets).AsQueryable());
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetPacketsOfCanteen(1).Returns((packets).AsQueryable());
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
 
             //Act
             var result = sut.CanteenContents(0) as ViewResult;
@@ -137,8 +137,8 @@ namespace UserInterface.test {
         [Fact]
         public void Canteen_Content_With_Invalid_Id_Should_Redirect() {
             //Arrange
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
-            repoMock.GetPacketsOfCantine(Arg.Any<int>()).ReturnsNull();
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
+            repoMock.GetPacketsOfCanteen(Arg.Any<int>()).ReturnsNull();
 
             //Act
             var result = sut.CanteenContents(-1) as RedirectToActionResult;
@@ -151,8 +151,8 @@ namespace UserInterface.test {
         [Fact]
         public void Canteen_Content_With_Id_0_But_Canteen_Cannot_Be_Found_Redirect() {
             //Arrange
-            repoMock.GetCantine(Arg.Any<string>()).ReturnsNull();
-            repoMock.GetPacketsOfCantine(Arg.Any<int>()).ReturnsNull();
+            repoMock.GetCanteen(Arg.Any<string>()).ReturnsNull();
+            repoMock.GetPacketsOfCanteen(Arg.Any<int>()).ReturnsNull();
 
             //Act
             var result = sut.CanteenContents(-1) as RedirectToActionResult;
@@ -184,9 +184,9 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 1,
                 eighteenUp = true,
-                cantine = Infrastructure.InMemoryRepository.cantine,
+                Canteen = Infrastructure.InMemoryRepository.Canteen,
             };
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             repoMock.AddPacket(packet).Returns(true);
 
             //Act
@@ -208,10 +208,10 @@ namespace UserInterface.test {
                 endPickup = DateTime.Now.AddDays(1),
                 typeOfMeal = TypeOfMeal.Drink,
                 eighteenUp = true,
-                cantine = Infrastructure.InMemoryRepository.cantine,
+                Canteen = Infrastructure.InMemoryRepository.Canteen,
             };
             repoMock.AddPacket(packet).Returns(true);
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             sut.ModelState.AddModelError("key", "error message");
 
             //Act
@@ -268,9 +268,9 @@ namespace UserInterface.test {
                 typeOfMeal = TypeOfMeal.Drink,
                 price = 1,
                 eighteenUp = true,
-                cantine = Infrastructure.InMemoryRepository.cantine,
+                Canteen = Infrastructure.InMemoryRepository.Canteen,
             };
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             repoMock.UpdatePacket(Arg.Any<Packet>()).Returns(true);
             repoMock.UpdatePacket(packet).Returns(true);
 
@@ -292,9 +292,9 @@ namespace UserInterface.test {
                 endPickup = DateTime.Now.AddDays(1),
                 typeOfMeal = TypeOfMeal.Drink,
                 eighteenUp = true,
-                cantine = Infrastructure.InMemoryRepository.cantine,
+                Canteen = Infrastructure.InMemoryRepository.Canteen,
             };
-            repoMock.GetCantine(Arg.Any<string>()).Returns(InMemoryRepository.cantine);
+            repoMock.GetCanteen(Arg.Any<string>()).Returns(InMemoryRepository.Canteen);
             repoMock.UpdatePacket(packet).Returns(false);
             sut.ModelState.AddModelError("key", "error message");
 

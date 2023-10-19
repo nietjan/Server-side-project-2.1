@@ -127,7 +127,7 @@
                     <h5>@r.name</h5>
                     <p>@string.Format("€ {0:N2} Euro", r.price)</p>
                     <p>@r.startPickup?.ToString("MMMM dd")</p>
-                    <p>@r.city - @r.cantine.location</p>
+                    <p>@r.city - @r.canteen.location</p>
                 </div>
                 <div class="col-lg-2 col-sm-12 my-auto text-center">
                     <button onclick="location.href='@Url.Action("Detail", "Packet", new {id = r.id})'" class="btn-default">Check</button>

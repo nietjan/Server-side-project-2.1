@@ -162,7 +162,7 @@ namespace Infrastructure.test {
         [Fact]
         public async void Get_All_Packets_Of_Canteen_With_Valid_Id() {
             //Arrange
-            _context.canteen.Add(new Cantine() {
+            _context.canteen.Add(new Canteen() {
                 location = "",
                 city = City.Breda,
                 id = 1,
@@ -177,7 +177,7 @@ namespace Infrastructure.test {
             await _context.SaveChangesAsync();   
 
             //Act
-            var packets = repository.GetPacketsOfCantine(1);
+            var packets = repository.GetPacketsOfCanteen(1);
 
             //Assert
             Assert.NotNull(packets);
@@ -188,7 +188,7 @@ namespace Infrastructure.test {
         [InlineData(2)]
         public async void Get_All_Packets_Of_Canteen_With_Invalid_Id_Returns_Null(int id) {
             //Arrange
-            _context.canteen.Add(new Cantine() {
+            _context.canteen.Add(new Canteen() {
                 location = "",
                 city = City.Breda,
                 id = 1,
@@ -204,7 +204,7 @@ namespace Infrastructure.test {
 
 
             //Act
-            var packets = repository.GetPacketsOfCantine(id);
+            var packets = repository.GetPacketsOfCanteen(id);
 
             //Assert
             Assert.Null(packets);
@@ -423,22 +423,22 @@ namespace Infrastructure.test {
             Assert.Null(result);
         }
 
-        //GetCantines
+        //GetCanteens
         [Fact]
         public async void Should_Return_All_Canteens() {
             //Arrange
-            var canteen = new Cantine() { location = "" };
-            var canteen2 = new Cantine() { location = "" };
-            var canteen3 = new Cantine() { location = "" };
+            var canteen = new Canteen() { location = "" };
+            var canteen2 = new Canteen() { location = "" };
+            var canteen3 = new Canteen() { location = "" };
             _context.canteen.Add(canteen);
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CantineStaffMember() {securityId="1", cantine = canteen, name="" });
+            _context.canteenStaffMembers.Add(new CanteenStaffMember() {securityId="1", Canteen = canteen, name="" });
             await _context.SaveChangesAsync();
 
             //Act
-            var list = repository.GetCantines("1");
+            var list = repository.GetCanteens("1");
 
             //Assert
             Assert.NotNull(list);
@@ -449,22 +449,22 @@ namespace Infrastructure.test {
         public async void Should_Return_All_Canteens_With_Canteen_Of_User_First() {
             //Arrange
              
-            var canteen = new Cantine() { location = "" };
-            var canteen2 = new Cantine() { location = "" };
-            var canteen3 = new Cantine() { location = "" };
+            var canteen = new Canteen() { location = "" };
+            var canteen2 = new Canteen() { location = "" };
+            var canteen3 = new Canteen() { location = "" };
             _context.canteen.Add(canteen);
             _context.canteen.Add(canteen2);
             _context.canteen.Add(canteen3);
 
-            _context.canteenStaffMembers.Add(new CantineStaffMember() { securityId = "1", cantine = canteen, name = "" });
+            _context.canteenStaffMembers.Add(new CanteenStaffMember() { securityId = "1", Canteen = canteen, name = "" });
             await _context.SaveChangesAsync();
 
             //Act
-            var list = repository.GetCantines("1");
+            var list = repository.GetCanteens("1");
 
             //Assert
             Assert.NotNull(list);
-            Assert.Equal(canteen, _context.canteenStaffMembers.First().cantine);
+            Assert.Equal(canteen, _context.canteenStaffMembers.First().Canteen);
             Assert.Equal(3, _context.canteen.Count());
         }
 
@@ -589,14 +589,14 @@ namespace Infrastructure.test {
         public async void Get_Canteen_With_Valid_Id_Should_Return_Canteen() {
             //Arrange
             string securityId = "123";
-            var canteen = new Cantine() { location = "" };
-            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123, cantine = canteen };
+            var canteen = new Canteen() { location = "" };
+            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123, Canteen = canteen };
             _context.canteenStaffMembers.Add(staffMember);
             _context.canteen.Add(canteen);
             await _context.SaveChangesAsync();
 
             //Act
-            var result = repository.GetCantine(securityId);
+            var result = repository.GetCanteen(securityId);
 
             //Assert
             Assert.Equal(canteen, result);
@@ -606,14 +606,14 @@ namespace Infrastructure.test {
         public async void Get_Canteen_With_Invalid_Id_Should_Return_Null() {
             //Arrange
             string securityId = "123";
-            var canteen = new Cantine() { location = "" };
-            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123, cantine = canteen };
+            var canteen = new Canteen() { location = "" };
+            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123, Canteen = canteen };
             _context.canteenStaffMembers.Add(staffMember);
             _context.canteen.Add(canteen);
             await _context.SaveChangesAsync();
 
             //Act
-            var result = repository.GetCantine("");
+            var result = repository.GetCanteen("");
 
             //Assert
             Assert.Null(result);
@@ -623,12 +623,12 @@ namespace Infrastructure.test {
         public async void Get_Canteen_With_Canteen_Equals_Null_Should_Return_Null() {
             //Arrange
             string securityId = "123";
-            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123 };
+            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123 };
             _context.canteenStaffMembers.Add(staffMember);
             await _context.SaveChangesAsync();
 
             //Act
-            var result = repository.GetCantine("");
+            var result = repository.GetCanteen("");
 
             //Assert
             Assert.Null(result);
@@ -639,7 +639,7 @@ namespace Infrastructure.test {
         public async void User_Is_Canteen_Staff_With_Valid_Id_Should_Return_True() {
             //Arrange
             string securityId = "123";
-            var staffMember = new CantineStaffMember() { name = "", securityId = securityId, staffNumber = 123 };
+            var staffMember = new CanteenStaffMember() { name = "", securityId = securityId, staffNumber = 123 };
             _context.canteenStaffMembers.Add(staffMember);
             await _context.SaveChangesAsync();
 

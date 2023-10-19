@@ -15,8 +15,8 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
             var packet = new Packet() {
                 name = "Packet2",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Drink,
@@ -38,8 +38,8 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
             var packet = new Packet() {
                 name = "Packet2",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Drink,
@@ -61,8 +61,8 @@ namespace Infrastructure.test {
             var packet = new Packet() {
                 id = 4,
                 name = "Packet2",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Drink,
@@ -85,8 +85,8 @@ namespace Infrastructure.test {
             var packet = new Packet() {
                 id = 0,
                 name = "Packet2",
-                cantine = InMemoryRepository.cantine,
-                city = InMemoryRepository.cantine.city,
+                Canteen = InMemoryRepository.Canteen,
+                city = InMemoryRepository.Canteen.city,
                 startPickup = DateTime.Now,
                 endPickup = DateTime.Now.AddHours(2),
                 typeOfMeal = TypeOfMeal.Drink,
@@ -170,7 +170,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var packets = repository.GetPacketsOfCantine(1);
+            var packets = repository.GetPacketsOfCanteen(1);
 
             //Assert
             Assert.NotNull(packets);
@@ -184,7 +184,7 @@ namespace Infrastructure.test {
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var packets = repository.GetPacketsOfCantine(id);
+            var packets = repository.GetPacketsOfCanteen(id);
 
             //Assert
             Assert.Null(packets);
@@ -364,14 +364,14 @@ namespace Infrastructure.test {
             Assert.Null(result);
         }
 
-        //GetCantines
+        //GetCanteens
         [Fact]
-        public void Should_Return_All_Cantines() {
+        public void Should_Return_All_Canteens() {
             //Arrange
             InMemoryRepository repository = new InMemoryRepository();
 
             //Act
-            var list = repository.GetCantines("1");
+            var list = repository.GetCanteens("1");
 
             //Assert
             Assert.NotNull(list);

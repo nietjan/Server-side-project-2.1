@@ -37,7 +37,7 @@ namespace DomainModel
         //18+
         public bool eighteenUp { get; set; } = false;
 
-        public Cantine? cantine { get; set; }
+        public Canteen? canteen { get; set; }
 
         //example products based on old products
         public ExampleProductList? exampleProductList { get; set; }

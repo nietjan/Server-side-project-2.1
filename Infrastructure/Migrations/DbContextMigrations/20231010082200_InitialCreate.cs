@@ -65,14 +65,14 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     securityId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     staffNumber = table.Column<int>(type: "int", nullable: false),
-                    cantineid = table.Column<int>(type: "int", nullable: true)
+                    Canteenid = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_canteenStaffMembers", x => x.id);
                     table.ForeignKey(
-                        name: "FK_canteenStaffMembers_canteen_cantineid",
-                        column: x => x.cantineid,
+                        name: "FK_canteenStaffMembers_canteen_Canteenid",
+                        column: x => x.Canteenid,
                         principalTable: "canteen",
                         principalColumn: "id");
                 });
@@ -112,15 +112,15 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     typeOfMeal = table.Column<int>(type: "int", nullable: false),
                     price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     eighteenUp = table.Column<bool>(type: "bit", nullable: false),
-                    cantineid = table.Column<int>(type: "int", nullable: true),
+                    Canteenid = table.Column<int>(type: "int", nullable: true),
                     exampleProductListid = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_packets", x => x.id);
                     table.ForeignKey(
-                        name: "FK_packets_canteen_cantineid",
-                        column: x => x.cantineid,
+                        name: "FK_packets_canteen_Canteenid",
+                        column: x => x.Canteenid,
                         principalTable: "canteen",
                         principalColumn: "id");
                     table.ForeignKey(
@@ -136,14 +136,14 @@ namespace Infrastructure.Migrations.DbContextMigrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_canteenStaffMembers_cantineid",
+                name: "IX_canteenStaffMembers_Canteenid",
                 table: "canteenStaffMembers",
-                column: "cantineid");
+                column: "Canteenid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_packets_cantineid",
+                name: "IX_packets_Canteenid",
                 table: "packets",
-                column: "cantineid");
+                column: "Canteenid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_packets_exampleProductListid",
