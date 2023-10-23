@@ -4,19 +4,16 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations.DbContextMigrations
+namespace Infrastructure.Migrations.PacketContextMigrations
 {
     [DbContext(typeof(PacketContext))]
-    [Migration("20231019095308_Updated packet type")]
-    partial class Updatedpackettype
+    partial class PacketContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,7 +101,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     b.Property<int?>("canteenid")
                         .HasColumnType("int");
 
-                    b.Property<int>("city")
+                    b.Property<int?>("city")
                         .HasColumnType("int");
 
                     b.Property<bool>("eighteenUp")
@@ -116,6 +113,9 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     b.Property<int?>("exampleProductListid")
                         .HasColumnType("int");
+
+                    b.Property<string>("imageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("name")
                         .IsRequired()

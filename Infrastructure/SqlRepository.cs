@@ -228,7 +228,9 @@ namespace Infrastructure {
 
         //GraphQl
         public IEnumerable<Packet> GetAllPackets() {
-            return context.packets;
+            var list =  context.packets;
+
+            return list;
         }
 
         public IEnumerable<Product> GetAllProducts() {

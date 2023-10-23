@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using DomainModel.overload;
 using DomainModel.enums;
 
@@ -17,7 +15,6 @@ namespace DomainModel
         //Date when pickup starts
         [Required(ErrorMessage = "Please choose a start date")]
         public DateTime? startPickup { get; set; }
-
 
         //Date when pickup ends
         [Required(ErrorMessage = "Please choose a end date")]
@@ -40,6 +37,12 @@ namespace DomainModel
 
         //example products based on old products
         public ExampleProductList? exampleProductList { get; set; }
+
+        private string? _imageUrl { get; set; }
+        public string? imageUrl {
+            get { return _imageUrl ?? "https://vmn-distrifood.imgix.net/uploads/2020/10/Too-Good-To-Go.jpg?auto=compress%2Cformat&q=50"; }
+            set { _imageUrl = value; }
+        }
 
         public void SetEighteenUpValue() {
             //check if exampleProductlist exists

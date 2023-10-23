@@ -36,6 +36,10 @@ namespace UserInterface.Controllers {
                         break;
                     }
                 }
+            } else {
+                //take city from student if logged in
+                var userId = _userSession.GetUserIdentityId();
+                if(userId != "") cityFiler = _repository.GetStudent(userId)?.studyCity;
             }
 
             //Turns string typeOfMeal into TypeOfMeal typeOfMeal if string is correct

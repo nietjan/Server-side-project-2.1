@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Infrastructure.Migrations.DbContextMigrations
+namespace Infrastructure.Migrations.PacketContextMigrations
 {
     /// <inheritdoc />
-    public partial class Initialize : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -105,7 +105,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    city = table.Column<int>(type: "int", nullable: false),
+                    city = table.Column<int>(type: "int", nullable: true),
                     startPickup = table.Column<DateTime>(type: "datetime2", nullable: false),
                     endPickup = table.Column<DateTime>(type: "datetime2", nullable: false),
                     reservedByid = table.Column<int>(type: "int", nullable: true),
@@ -113,7 +113,8 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     eighteenUp = table.Column<bool>(type: "bit", nullable: false),
                     canteenid = table.Column<int>(type: "int", nullable: true),
-                    exampleProductListid = table.Column<int>(type: "int", nullable: true)
+                    exampleProductListid = table.Column<int>(type: "int", nullable: true),
+                    imageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

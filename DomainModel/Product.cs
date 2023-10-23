@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DomainModel {
+﻿namespace DomainModel {
     public class Product {
         public int id { get; set; }
 
@@ -13,6 +6,10 @@ namespace DomainModel {
         
         public bool alcoholic { get; set; }
 
-        public string? imageUrl { get; set; }
+        private string? _imageUrl { get; set; }
+        public string? imageUrl {
+            get { return _imageUrl ?? "https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg="; }
+            set { _imageUrl = value; }
+        }
     }
 }

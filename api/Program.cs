@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Configuration;
+using ApplicationServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,9 @@ builder.Services.AddDbContext<PacketContext>(options => options.UseSqlServer(
         sqlOptions.EnableRetryOnFailure();
     }
 ), ServiceLifetime.Transient);
-builder.Services.AddScoped<IRepository, InMemoryRepository>();
+builder.Services.AddScoped<IRepository, SqlRepository>();
+builder.Services.AddScoped<IUserSession, UserSessionIdentity>();
+
 
 //identity
 builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlServer(

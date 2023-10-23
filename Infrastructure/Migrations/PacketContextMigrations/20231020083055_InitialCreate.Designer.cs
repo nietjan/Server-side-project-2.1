@@ -4,16 +4,19 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations.DbContextMigrations
+namespace Infrastructure.Migrations.PacketContextMigrations
 {
     [DbContext(typeof(PacketContext))]
-    partial class PacketContextModelSnapshot : ModelSnapshot
+    [Migration("20231020083055_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,7 +104,7 @@ namespace Infrastructure.Migrations.DbContextMigrations
                     b.Property<int?>("canteenid")
                         .HasColumnType("int");
 
-                    b.Property<int>("city")
+                    b.Property<int?>("city")
                         .HasColumnType("int");
 
                     b.Property<bool>("eighteenUp")
@@ -113,6 +116,9 @@ namespace Infrastructure.Migrations.DbContextMigrations
 
                     b.Property<int?>("exampleProductListid")
                         .HasColumnType("int");
+
+                    b.Property<string>("imageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("name")
                         .IsRequired()

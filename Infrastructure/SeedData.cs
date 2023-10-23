@@ -48,17 +48,17 @@ namespace Infrastructure
             };
 
             Product[] productsList = {
-                    new Product() {alcoholic=false, name="bread1" },
-                    new Product() {alcoholic=false, name="bread2" },
-                    new Product() {alcoholic=false, name="bread3"},
+                    new Product() {alcoholic=false, name="bread1", imageUrl="https://hips.hearstapps.com/hmg-prod/images/delish-190621-homemade-pita-0159-landscape-pf-1567692674.jpg?crop=1xw:0.8441943127962085xh" },
+                    new Product() {alcoholic=false, name="bread2", imageUrl="https://www.seriouseats.com/thmb/02cnc7c4s4tIGXlTWGXvIKDRmuE=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/better-no-knead-bread-recipe-hero-01_1-48d654bfadeb4a5caf9b233b00fc74ca.JPG" },
+                    new Product() {alcoholic=false, name="bread3", imageUrl="https://sallysbakingaddiction.com/wp-content/uploads/2019/12/homemade-artisan-bread.jpg"},
 
-                    new Product() {alcoholic=false, name="diner1"},
-                    new Product() {alcoholic=false, name="diner2"},
-                    new Product() {alcoholic=false, name="diner3"},
+                    new Product() {alcoholic=false, name="diner1", imageUrl="https://www.nice-info.be/sites/default/files/images/vlees_wysywig.png"},
+                    new Product() {alcoholic=false, name="diner2", imageUrl="https://budgetkoken.eu/wp-content/uploads/2017/12/Gefrituurde-kip.jpg"},
+                    new Product() {alcoholic=false, name="diner3", imageUrl = "https://www.dirksvishandel.nl/cache/images/webshop_products/2-m-db801062129ad818lekkerbek.jpg"},
 
-                    new Product() {alcoholic=true, name="drink1"},
-                    new Product() {alcoholic=false, name="drink2"},
-                    new Product() {alcoholic=true, name="drink3"},
+                    new Product() {alcoholic=true, name="drink1",imageUrl="https://prinselijkproeven.nl/wp-content/uploads/2022/11/Impio-Sauvignon-Blanc-Wijn-Wit-2-scaled.jpeg"},
+                    new Product() {alcoholic=false, name="drink2",imageUrl="https://www.dekweker.nl/image-service/_jcr_content.product.05414150535308.image/1/large.jpeg"},
+                    new Product() {alcoholic=true, name="drink3",imageUrl="https://www.biernet.nl/images/merken/38859-hertog%20jan%20pilsener%20bier%20in%20glas.jpg"},
             };
 
             ExampleProductList[] exampleList = {
@@ -73,16 +73,16 @@ namespace Infrastructure
             };
 
             Packet[] packets = {
-                new Packet(){name = "Bread1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[0], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Bread1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[0], price=5, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(9), endPickup=DateTime.Now.AddDays(11)},
                 new Packet(){name = "Diner2", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=15, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "Drink1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[2], price=15, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Drink1", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[2], price=15, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(6), endPickup=DateTime.Now.AddDays(6)},
                 new Packet(){name = "Bread2", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=2, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
-                new Packet(){name = "Diner2", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
+                new Packet(){name = "Diner2", canteen=canteens[0], city = canteens[0].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(12)},
                 new Packet(){name = "Drink2", reservedBy = students[1], canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=22, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
                 new Packet(){name = "Bread3", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[0], price=35, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
                 new Packet(){name = "Diner3", reservedBy = students[1], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[1], price=25, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
                 new Packet(){name = "Drink3", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[2], price=5, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
-                new Packet(){name = "Bread4", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[0], price=7, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
+                new Packet(){name = "Bread4", reservedBy = students[0], canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[0], price=7, typeOfMeal = exampleList[0].type, startPickup=DateTime.Now.AddDays(12), endPickup=DateTime.Now.AddDays(12).AddHours(5)},
                 new Packet(){name = "Diner4", canteen=canteens[0], city = canteens[1].city, exampleProductList = exampleList[1], price=7, typeOfMeal = exampleList[1].type, startPickup=DateTime.Now.AddDays(10), endPickup=DateTime.Now.AddDays(11)},
                 new Packet(){name = "Drink4", canteen=canteens[1], city = canteens[1].city, exampleProductList = exampleList[2], price=44, typeOfMeal = exampleList[2].type, startPickup=DateTime.Now.AddDays(11), endPickup=DateTime.Now.AddDays(11).AddHours(5)},
             };

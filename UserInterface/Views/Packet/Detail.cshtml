@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-6 col-lg-4 col-sm-12">
             <div class="product-img-holder">
-                <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
+                <img class="img-fluid" alt="packet image" src="@Model.imageUrl">
                 @if (Model.eighteenUp)
                 {
                     <img class="img-fluid img-over-product-img" alt="18+ icon" src="https://cdn-icons-png.flaticon.com/512/3570/3570248.png">
@@ -86,7 +86,7 @@
             @foreach (DomainModel.Product product in Model.exampleProductList.list) {
                 <div class="col-lg-2 col-sm-4 col-5 mb-2 px-0 mr-0">
                     <div class="product-img-holder">
-                        <img class="img-fluid" alt="packet image" src="https://media.istockphoto.com/id/1147544807/fr/vectoriel/pas-image-miniature-graphique-vectoriel.jpg?s=612x612&w=is&k=20&c=-RnzwVmgpowhd-C1iGQS30Sd5FrvKCXPxfsCSVR-HSg=">
+                        <img class="img-fluid" alt="packet image" src="@product.imageUrl">
                         @if(product.alcoholic){
                             <img class="img-fluid img-over-product-img" alt="18+ icon" src="https://cdn-icons-png.flaticon.com/512/3570/3570248.png">
                         }
