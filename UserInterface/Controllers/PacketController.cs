@@ -154,7 +154,7 @@ namespace UserInterface.Controllers {
                 }
                 return RedirectToAction("Detail", new { id = packet.id });
             } else {
-                return View();
+                return View(packet);
             }
         }
 
