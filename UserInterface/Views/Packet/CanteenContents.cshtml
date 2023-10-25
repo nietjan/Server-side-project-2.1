@@ -6,6 +6,19 @@
     var canteens = _repository.GetCanteens(userId);
 }
 <div class="p-2">
+    @if (Context.Request.Query["Update"] == "Reserved") {
+        <p class="text-center error-border">Packet cannot be updated, because the package is already reserved</p>
+    }
+    @if (Context.Request.Query["Update"] == "NotFound") {
+        <p class="text-center error-border">Packet cannot be updated, because the package cannot be found</p>
+    }
+    @if (Context.Request.Query["Delete"] == "Reserved") {
+        <p class="text-center error-border">Packet cannot be deleted, because the package is already reserved</p>
+    }
+    @if (Context.Request.Query["Delete"] == "NotFound") {
+        <p class="text-center error-border">Packet cannot be deleted, because the package cannot be found</p>
+    }
+
     @* canteen list dropdown *@
     <div class="btn-group">
         <button type="button" class="dropdown-toggle button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,7 +43,7 @@
                 <div class="col-lg-2 col-sm-12 p-0">
                     <img class="img-fluid" alt="packet image" src="@r.imageUrl">
                 </div>
-                <div class="col-lg-8 col-sm-12 p-0">
+                <div class="col-lg-6  col-sm-12 p-0">
                     <h5>@r.name</h5>
                     <p class="my-2">@string.Format("€ {0:N2} Euro", r.price)</p>
                     <p class="my-2">@r.startPickup?.ToString("MMMM dd")</p>
@@ -41,10 +54,11 @@
                         <p class="my-2">Reserved</p>
                     }
                 </div>
-                <div class="col-lg-2 col-sm-12 my-auto text-center p-0">
-                    <button onclick="location.href='@Url.Action("Detail", "Packet", new {id = r.id})'" class="btn-default">Check</button>
+                <div class="col-lg-4 col-sm-12 my-auto text-center p-0">
+                    <button onclick="location.href='@Url.Action("Detail", "Packet", new {id = r.id})'">Check</button>
                     @if (r.reservedBy == null) {
-                        <button class="mx-2" onclick="location.href='@Url.Action("Update", "Packet", new {id = r.id})'" class="btn-default">Update</button>
+                        <button class="mx-2" onclick="location.href='@Url.Action("Update", "Packet", new {id = r.id})'">Update</button>
+                        <button class="mx-2" onclick="location.href='@Url.Action("Delete", "Packet", new {id = r.id})'">Delete</button>
                     }
                 </div>
             </div>

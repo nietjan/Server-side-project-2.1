@@ -242,7 +242,8 @@ namespace UserInterface.test {
             var result = sut.Update(1) as RedirectToActionResult; ;
 
             //Assert
-            Assert.Equal("List", result?.ActionName);
+            Assert.Equal("CanteenContents", result?.ActionName);
+            Assert.Equal("NotFound", result?.RouteValues?["Update"]);
         }
 
         [Fact]
@@ -254,7 +255,8 @@ namespace UserInterface.test {
             var result = sut.Update(1) as RedirectToActionResult; ;
 
             //Assert
-            Assert.Equal("List", result?.ActionName);
+            Assert.Equal("CanteenContents", result?.ActionName);
+            Assert.Equal("Reserved", result?.RouteValues?["Update"]);
         }
 
         [Fact]
@@ -305,6 +307,67 @@ namespace UserInterface.test {
             Assert.Null(result.ViewName);
         }
 
+        [Fact]
+        public async void Delete_With_Invalid_Id_Should_Redirect_With_Query_Param() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).ReturnsNull();
+            sut.ModelState.AddModelError("key", "error message");
+
+            //Act
+            var result = await sut.Delete(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("CanteenContents", result?.ActionName);
+            Assert.Equal("NotFound", result?.RouteValues?["Delete"]);
+        }
+
+        [Fact]
+        public async void Delete_With_Valid_Id_But_Already_Reserved_Package__Should_Redirect_With_Query_Param() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() {
+                id = 1,
+                reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda },
+                name = "test",
+                city = City.Breda,
+                startPickup = DateTime.Now,
+                price = 1,
+                endPickup = DateTime.Now.AddDays(1),
+                typeOfMeal = TypeOfMeal.Drink,
+                eighteenUp = true,
+                canteen = InMemoryRepository.Canteen,
+            });
+
+            //Act
+            var result = await sut.Delete(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("CanteenContents", result?.ActionName);
+            Assert.Equal("Reserved", result?.RouteValues?["Delete"]);
+        }
+
+        [Fact]
+        public async void Delete_With_Valid_Id_Should_Redirect() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() {
+                id = 1,
+                reservedBy = new Student() { name = "", studentNumber = 123, studyCity = City.Breda },
+                name = "test",
+                city = City.Breda,
+                startPickup = DateTime.Now,
+                price = 1,
+                endPickup = DateTime.Now.AddDays(1),
+                typeOfMeal = TypeOfMeal.Drink,
+                eighteenUp = true,
+                canteen = InMemoryRepository.Canteen,
+            });
+            repoMock.DeletePacket(Arg.Any<Packet>()).Returns(true);
+
+            //Act
+            var result = await sut.Delete(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("CanteenContents", result?.ActionName);
+        }
 
         [Fact]
         public void Detail_With_Not_Correct_Id_Should_Redirect() {

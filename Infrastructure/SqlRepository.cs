@@ -225,6 +225,17 @@ namespace Infrastructure {
             if (list.Count() != 1) return null;
             return list.Single();
         }
+        public async Task<bool> DeletePacket(Packet packet) {
+            var actualPacketList = context.packets.Include(i => i.reservedBy).Where(i => i.id == packet.id && i.reservedBy == null);
+            if (actualPacketList.Count() != 1) {
+                return false;
+            }
+            var actualPacket = actualPacketList.Single();
+
+            context.packets.Remove(packet);
+            await context.SaveChangesAsync();
+            return true;
+        }
 
         //GraphQl
         public IEnumerable<Packet> GetAllPackets() {
@@ -236,5 +247,6 @@ namespace Infrastructure {
         public IEnumerable<Product> GetAllProducts() {
             return context.products;
         }
+
     }
 }

@@ -469,6 +469,48 @@ namespace Infrastructure.test {
             Assert.True(result);
         }
 
+        //Delete packet
+        [Fact]
+        public async void Delete_Packet_With_Not_In_Db_Packet_Returns_False() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+
+            //Act
+            var result = await repository.UpdatePacket(new Packet() {
+                name = " ",
+                id = 0,
+            });
+
+            //Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async void Delete_Packet_With_Packet_In_Db_Packet_Returns_False_When_Reserved() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+            var packet = repository.packets.Last();
+     
+            //Act
+            var result = await repository.DeletePacket(packet);
+
+            //Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async void Delete_Packet_With_Packet_In_Db_Packet_Returns_True_When_Not_Reserved() {
+            //Arrange
+            InMemoryRepository repository = new InMemoryRepository();
+            var packet = repository.packets.First();
+
+            //Act
+            var result = await repository.DeletePacket(packet);
+
+            //Assert
+            Assert.True(result);
+        }
+
         //GetStudent
         [Fact]
         public void Get_Student_With_Valid_Id_Should_Return_Student() {

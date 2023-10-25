@@ -272,7 +272,18 @@ namespace Infrastructure {
             return new Student() { securityId = securityId, name = "Student1", birthday = new DateTime(2006, 1, 1), studentNumber = 123, studyCity = DomainModel.enums.City.Breda };
             
         }
+        public async Task<bool> DeletePacket(Packet packet) {
+            var actualPacketList = packets.Where(i => i.id == packet.id && i.reservedBy == null);
+            if (actualPacketList.Count() != 1) {
+                return false;
+            }
+            var actualPacket = actualPacketList.Single();
 
+            packets.Remove(packet);
+            return true;
+        }
+
+        //graphQl
         public IEnumerable<Packet> GetAllPackets() {
             return packets;
         }
@@ -286,5 +297,6 @@ namespace Infrastructure {
 
             return list;
         }
+
     }
 }

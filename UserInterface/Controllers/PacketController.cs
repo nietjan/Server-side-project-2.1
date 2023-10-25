@@ -125,9 +125,9 @@ namespace UserInterface.Controllers {
             
             //if packet does not exist or is reserved it can not be updated
             if(packet == null) {
-                return RedirectToAction("List", new { id = 0 });
+                return RedirectToAction("CanteenContents", new { id = 0, Update = "NotFound" });
             } else if(packet.reservedBy != null) {
-                return RedirectToAction("List", new { id = 0 });
+                return RedirectToAction("CanteenContents", new { id = 0, Update = "Reserved" });
             }
 
             return View(packet);
@@ -139,6 +139,11 @@ namespace UserInterface.Controllers {
             if (packet.startPickup >= packet.endPickup) {
                 ModelState.AddModelError("CustomError", "End date can't be before start date");
             }
+
+            //Check if date is correct
+            if (packet.startPickup > DateTime.Now.AddDays(2)) ModelState.AddModelError("CustomError", "Start date can't be more than two days after today");
+
+            if (packet.endPickup > DateTime.Now.AddDays(3)) ModelState.AddModelError("CustomError", "End date can't be more than two days after today");
 
             if (ModelState.IsValid) {
                 //add example products
@@ -156,6 +161,23 @@ namespace UserInterface.Controllers {
             } else {
                 return View(packet);
             }
+        }
+
+        [Authorize(Policy = "Staff")]
+        public async Task<IActionResult> Delete(int id) {
+            var packet = _repository.GetSinglePacket(id);
+
+            //if packet does not exist or is reserved it can not be deleted
+            if (packet == null) {
+                return RedirectToAction("CanteenContents", new { id = 0, Delete = "NotFound" });
+            } else if (packet.reservedBy != null) {
+                return RedirectToAction("CanteenContents", new { id = 0, Delete = "Reserved" });
+            }
+
+            //delete package
+            await _repository.DeletePacket(packet);
+
+            return RedirectToAction("CanteenContents", new { id = 0 });
         }
 
         [AllowAnonymous]

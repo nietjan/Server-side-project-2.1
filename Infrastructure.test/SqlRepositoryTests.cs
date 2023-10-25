@@ -584,6 +584,48 @@ namespace Infrastructure.test {
             Assert.Equal(packet.name, _context.packets.First().name);
         }
 
+        //Delete packet
+        [Fact]
+        public async void Delete_Packet_With_Not_In_Db_Packet_Returns_False() {
+            //Arrange
+
+            //Act
+            var result = await repository.DeletePacket(new Packet() {
+                name = " ",
+                id = 0,
+            });
+
+            //Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async void Delete_Packet_With_Packet_In_Db_Packet_Returns_False_When_Reserved() {
+            //Arrange
+            Packet packet = new Packet() { name = "", reservedBy = new Student() { name="", studentNumber=134, studyCity=City.Breda}, id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.DeletePacket(packet);
+
+            //Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async void Delete_Packet_With_Packet_In_Db_Packet_Returns_True_When_Not_Reserved() {
+            Packet packet = new Packet() { name = "",  id = 1, city = City.Breda, startPickup = DateTime.Now, endPickup = DateTime.Now.AddDays(1), typeOfMeal = TypeOfMeal.Diner, price = 1 };
+            _context.packets.Add(packet);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var result = await repository.DeletePacket(packet);
+
+            //Assert
+            Assert.True(result);
+        }
+
         //GetCanteen
         [Fact]
         public async void Get_Canteen_With_Valid_Id_Should_Return_Canteen() {
