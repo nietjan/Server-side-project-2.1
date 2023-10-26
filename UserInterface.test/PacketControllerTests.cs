@@ -74,7 +74,7 @@ namespace UserInterface.test {
             repoMock.UserIsCanteenStaff(Arg.Any<string>()).Returns(false);
 
             //Act
-            var result = sut.List(1) as ViewResult;
+            var result = sut.List() as ViewResult;
 
             //Assert
             Assert.Null(result.ViewName);
@@ -87,7 +87,7 @@ namespace UserInterface.test {
             repoMock.UserIsCanteenStaff(Arg.Any<string>()).Returns(true);
 
             //Act
-            var result = sut.List(1) as RedirectToActionResult; ;
+            var result = sut.List() as RedirectToActionResult; ;
 
             //Assert
             Assert.Equal("CanteenContents", result?.ActionName);
@@ -409,25 +409,100 @@ namespace UserInterface.test {
         }
 
         [Fact]
-        public async Task Reserve_With_Wrong_Id_Should_Redirect_To_List() {
+        public async Task Reserve_With_Id_Of_Not_Existing_Package_Should_Redirect_To_List_1() {
             //Arrange
-            repoMock.GetSinglePacket(1).ReturnsNull();
-            repoMock.ReservePacket(1, Arg.Any<string>()).ReturnsNull();
+            repoMock.GetSinglePacket(Arg.Any<int>()).ReturnsNull();
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).ReturnsNull();
 
             //Act
             var result = await sut.reservePacket(-1) as RedirectToActionResult;
 
             //Assert
-            Assert.Equal("List", result?.ActionName);
-            Assert.Equal(-1, result?.RouteValues?["id"]);
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("NotFound", result?.RouteValues?["Reserve"]);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Id_Of_Not_Existing_Package_Should_Redirect_To_List_2() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Packet not found");
+
+            //Act
+            var result = await sut.reservePacket(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("NotFound", result?.RouteValues?["Reserve"]);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Id_Of_Packet_Already_Reserved_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Packet already reserved");
+
+            //Act
+            var result = await sut.reservePacket(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("Reserved", result?.RouteValues?["Reserve"]);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Id_Of_Packet_When_Student_Has_Already_Reserved_A_Package_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Already reserved a package");
+
+            //Act
+            var result = await sut.reservePacket(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("ReservedForDay", result?.RouteValues?["Reserve"]);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Id_Of_Packet_But_Student_Cannot_Be_Found_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Student cannot be found");
+
+            //Act
+            var result = await sut.reservePacket(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("NotFound", result?.RouteValues?["Student"]);
+            Assert.Null(result?.ControllerName);
+        }
+
+        [Fact]
+        public async Task Reserve_With_Id_Of_Packet_But_Student_Is_Not_Old_Enough_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Student not old enough to reserve packet");
+
+            //Act
+            var result = await sut.reservePacket(-1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("NotOldEnough", result?.RouteValues?["Reserve"]);
             Assert.Null(result?.ControllerName);
         }
 
         [Fact]
         public async Task Reserve_With_Correct_Id_Should_Redirect_To_Detail() {
             //Arrange
-            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-            repoMock.ReservePacket(1, Arg.Any<string>()).ReturnsNull();
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.ReservePacket(Arg.Any<int>(), Arg.Any<string>()).ReturnsNull();
 
             //Act
             var result = await sut.reservePacket(1) as RedirectToActionResult;
@@ -435,43 +510,13 @@ namespace UserInterface.test {
             //Assert
             Assert.Equal("Detail", result?.ActionName);
             Assert.Null(result.ControllerName);
-        }
-
-        [Fact]
-        public async Task Reserve_With_Correct_Id_But_Reserve_is_Not_Success_Should_Redirect_To_List() {
-            //Arrange
-            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-            repoMock.ReservePacket(1, Arg.Any<string>()).Returns("");
-
-            //Act
-            var result = await sut.reservePacket(1) as RedirectToActionResult;
-
-            //Assert
-            Assert.Equal("list", result?.ActionName);
-            Assert.Equal(-1, result?.RouteValues?["id"]);
-            Assert.Null(result.ControllerName);
-        }
-
-        [Fact]
-        public async Task Unreserve_With_Wrong_Id_Should_Redirect_To_List() {
-            //Arrange
-            repoMock.GetSinglePacket(1).ReturnsNull();
-            repoMock.UnreservePacket(1, Arg.Any<string>()).ReturnsNull();
-
-            //Act
-            var result = await sut.unreservePacket(1) as RedirectToActionResult;
-
-            //Assert
-            Assert.Equal("List", result?.ActionName);
-            Assert.Equal(-2, result?.RouteValues?["id"]);
-            Assert.Null(result?.ControllerName);
         }
 
         [Fact]
         public async Task Unreserve_With_Correct_Id_Should_Redirect_To_Detail() {
             //Arrange
-            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-            repoMock.UnreservePacket(1, Arg.Any<string>()).ReturnsNull();
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.UnreservePacket(Arg.Any<int>(), Arg.Any<string>()).ReturnsNull();
 
             //Act
             var result = await sut.unreservePacket(1) as RedirectToActionResult;
@@ -482,17 +527,47 @@ namespace UserInterface.test {
         }
 
         [Fact]
-        public async Task Unreserve_With_Correct_Id_But_Reserve_is_Not_Success_Should_Redirect_To_List() {
+        public async Task Unreserve_With_Id_That_Cannot_Be_Found_Should_Redirect_To_List() {
             //Arrange
-            repoMock.GetSinglePacket(1).Returns(new Packet() { name = "" });
-            repoMock.UnreservePacket(1, Arg.Any<string>()).Returns("");
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.UnreservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Packet not found");
 
             //Act
             var result = await sut.unreservePacket(1) as RedirectToActionResult;
 
             //Assert
             Assert.Equal("list", result?.ActionName);
-            Assert.Equal(-2, result?.RouteValues?["id"]);
+            Assert.Equal("NotFound", result?.RouteValues?["Unreserve"]);
+            Assert.Null(result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Unreserve_With_Id_Of_Not_Reserved_Packet_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.UnreservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Packet was not reserved");
+
+            //Act
+            var result = await sut.unreservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("NotReserved", result?.RouteValues?["Unreserve"]);
+            Assert.Null(result.ControllerName);
+        }
+
+        [Fact]
+        public async Task Unreserve_With_Id_Of_Packet_That_Is_Not_Reserved_By_User_Should_Redirect_To_List() {
+            //Arrange
+            repoMock.GetSinglePacket(Arg.Any<int>()).Returns(new Packet() { name = "" });
+            repoMock.UnreservePacket(Arg.Any<int>(), Arg.Any<string>()).Returns("Packet is not reserved by user");
+
+            //Act
+            var result = await sut.unreservePacket(1) as RedirectToActionResult;
+
+            //Assert
+            Assert.Equal("list", result?.ActionName);
+            Assert.Equal("NotByUser", result?.RouteValues?["Unreserve"]);
             Assert.Null(result.ControllerName);
         }
     }
