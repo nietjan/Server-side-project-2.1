@@ -19,7 +19,7 @@ namespace UserInterface.Controllers {
         }
 
         [AllowAnonymous]
-        public IActionResult List(int id, string? city = null, string? typeOfMeal = null) {
+        public IActionResult List(string? city = null, string? typeOfMeal = null) {
             //If user is Canteen staff redidirect to CanteenContents
             if (_repository.UserIsCanteenStaff(_userSession.GetUserIdentityId())) {
                 return RedirectToAction("CanteenContents");
@@ -89,12 +89,12 @@ namespace UserInterface.Controllers {
         [HttpPost]
         public async Task<IActionResult> Register(DomainModel.Packet packet) {    
             if(packet.startPickup >= packet.endPickup) {
-                ModelState.AddModelError("CustomError", "End date can't be before start date");
+                ModelState.AddModelError("CustomError", "End date can't be before or at the same time as start date");
             }
 
             if(packet.startPickup > DateTime.Now.AddDays(2)) ModelState.AddModelError("CustomError", "Start date can't be more than two days after today");
             
-            if (packet.endPickup > DateTime.Now.AddDays(3)) ModelState.AddModelError("CustomError", "End date can't be more than two days after today");
+            if (packet.endPickup > DateTime.Now.AddDays(3)) ModelState.AddModelError("CustomError", "End date can't be more than three days after today");
             
             if (ModelState.IsValid) {
                 //set canteen connected to user
@@ -137,13 +137,13 @@ namespace UserInterface.Controllers {
         [HttpPost]
         public async Task<IActionResult> Update(DomainModel.Packet packet) {
             if (packet.startPickup >= packet.endPickup) {
-                ModelState.AddModelError("CustomError", "End date can't be before start date");
+                ModelState.AddModelError("CustomError", "End date can't be before or at the same time as start date");
             }
 
             //Check if date is correct
             if (packet.startPickup > DateTime.Now.AddDays(2)) ModelState.AddModelError("CustomError", "Start date can't be more than two days after today");
 
-            if (packet.endPickup > DateTime.Now.AddDays(3)) ModelState.AddModelError("CustomError", "End date can't be more than two days after today");
+            if (packet.endPickup > DateTime.Now.AddDays(3)) ModelState.AddModelError("CustomError", "End date can't be more than three days after today");
 
             if (ModelState.IsValid) {
                 //add example products
@@ -197,18 +197,31 @@ namespace UserInterface.Controllers {
         }
 
         [Authorize(Policy = "Student")]
-        public async Task<IActionResult> reservePacket(int id) {          
+        public async Task<IActionResult> reservePacket(int id) {
             var packet = _repository.GetSinglePacket(id);
 
             //if packet == null, than packet does not exist
             if (packet == null) {
-                return RedirectToAction("List", new { id = -1 });
+                return RedirectToAction("list", new { Reserve = "NotFound" });
             }
             
-            //if reserve/unreserve packet is success go back to detail page, otherwise go to list page 
+            //if reserve packet is success go back to detail page, otherwise go to list page 
             var answer = await _repository.ReservePacket(id, _userSession.GetUserIdentityId());
             if(answer == null) return RedirectToAction("Detail", new { id = id });
-            else return RedirectToAction("list", new { id = -1 });
+
+            switch (answer) {
+                case "Packet not found":
+                    return RedirectToAction("list", new { Reserve = "NotFound" });
+                case "Packet already reserved":
+                    return RedirectToAction("list", new { Reserve = "Reserved" });
+                case "Already reserved a package":
+                    return RedirectToAction("list", new { Reserve = "ReservedForDay" });
+                case "Student cannot be found":
+                    return RedirectToAction("list", new { Student = "NotFound" });
+                case "Student not old enough to reserve packet":
+                    return RedirectToAction("list", new { Reserve = "NotOldEnough" });
+                default: return RedirectToAction("list");
+            }
         }
 
         [Authorize(Policy = "Student")]
@@ -217,13 +230,22 @@ namespace UserInterface.Controllers {
 
             //if packet == null, than packet does not exist
             if (packet == null) {
-                return RedirectToAction("List", new { id = -2 });
+                return RedirectToAction("list", new { Unreserve = "NotFound" });
             }
 
-            //if reserve/unreserve packet is success go back to detail page, otherwise go to list page 
+            //if unreserve packet is success go back to detail page, otherwise go to list page 
             var answer = await _repository.UnreservePacket(id, _userSession.GetUserIdentityId());
             if (answer == null) return RedirectToAction("Detail", new { id = id });
-            else return RedirectToAction("list", new { id = -2 });
+
+            switch (answer) {
+                case "Packet not found":
+                    return RedirectToAction("list", new { Unreserve = "NotFound" });
+                case "Packet was not reserved":
+                    return RedirectToAction("list", new { Unreserve = "NotReserved" });
+                case "Packet is not reserved by user":
+                    return RedirectToAction("list", new { Unreserve = "NotByUser" });
+                default: return RedirectToAction("list");
+            }
         }
     }
 }

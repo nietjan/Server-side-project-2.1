@@ -7,16 +7,19 @@
 }
 <div class="p-2">
     @if (Context.Request.Query["Update"] == "Reserved") {
-        <p class="text-center error-border">Packet cannot be updated, because the package is already reserved</p>
+        <p class="text-center error-border">Packet cannot be updated, because the packet is already reserved</p>
     }
     @if (Context.Request.Query["Update"] == "NotFound") {
-        <p class="text-center error-border">Packet cannot be updated, because the package cannot be found</p>
+        <p class="text-center error-border">Packet cannot be updated, because the packet cannot be found</p>
     }
     @if (Context.Request.Query["Delete"] == "Reserved") {
-        <p class="text-center error-border">Packet cannot be deleted, because the package is already reserved</p>
+        <p class="text-center error-border">Packet cannot be deleted, because the packet is already reserved</p>
     }
     @if (Context.Request.Query["Delete"] == "NotFound") {
-        <p class="text-center error-border">Packet cannot be deleted, because the package cannot be found</p>
+        <p class="text-center error-border">Packet cannot be deleted, because the packet cannot be found</p>
+    }
+    @if (Context.Request.Query["Reserve"] == "NonStudent") {
+        <p class="text-center error-border">Packet can only be reserved by a student</p>
     }
 
     @* canteen list dropdown *@

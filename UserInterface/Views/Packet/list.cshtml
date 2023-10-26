@@ -67,12 +67,34 @@
 
 
 <div class="p-2">
-    @if ((string?)ViewContext.RouteData.Values["id"] == "-1") {
-        <p class="text-center error-border">Packet is already reserved</p>
-    } 
-    @if ((string?)ViewContext.RouteData.Values["id"] == "-2") {
-        <p class="text-center error-border">Packet cannot be unreserved. Either user has not reserved the package or the package has been reserved by another user</p>
+    @* Reserve errors *@
+    @if (Context.Request.Query["Reserve"] == "NotFound") {
+        <p class="text-center error-border">Packet cannot be reserved, because the packet cannot be found</p>
     }
+    @if (Context.Request.Query["Reserve"] == "Reserved") {
+        <p class="text-center error-border">Packet cannot be reserved, because the package is already reserved</p>
+    }
+    @if (Context.Request.Query["Reserve"] == "ReservedForDay") {
+        <p class="text-center error-border">Packet cannot be reserved, because the the student has already reserved a package for this day</p>
+    }
+    @if (Context.Request.Query["Reserve"] == "NotOldEnough") {
+        <p class="text-center error-border">Packet cannot be reserved, because the the student is not old enough</p>
+    }
+    @if (Context.Request.Query["Student"] == "NotFound") {
+        <p class="text-center error-border">Packet cannot be reserved, because the the student cannot be found</p>
+    }
+
+    @* Unreserve errors *@
+    @if (Context.Request.Query["Unreserve"] == "NotFound") {
+        <p class="text-center error-border">Packet cannot be unreserved, because the packet cannot be found</p>
+    }
+    @if (Context.Request.Query["Unreserve"] == "NotReserved") {
+        <p class="text-center error-border">Packet cannot be unreserved, because the package is not reserved</p>
+    }
+    @if (Context.Request.Query["Unreserve"] == "NotByUser") {
+        <p class="text-center error-border">Packet cannot be unreserved, because the package is not reserved by the user</p>
+    }
+
 
     @* check if page is for registerd packeges or non regsiterd packages *@
     @if ((string?)ViewContext.RouteData.Values["action"] == "Reserved" && (string?)ViewContext.RouteData.Values["controller"] == "Packet") {
